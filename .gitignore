@@ -1,0 +1,9 @@
+# workplace
+/.idea
+*.xml
+*.DS_Store
+/tmp
+/dist
+node_modules/
+/.tscache
+!.gitignore
