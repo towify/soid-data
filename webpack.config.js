@@ -2,7 +2,6 @@
 const path = require('path');
 module.exports = {
   mode: "production",
-  target: "electron-renderer",
   entry: {
     main: "./app/main.ts"
   },

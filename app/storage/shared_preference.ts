@@ -6,14 +6,13 @@
 import { Nullable } from "../type/nullable";
 
 class SharedPreference {
-  public static sharedPreference: SharedPreference | undefined;
+  public static _shared: SharedPreference | undefined;
 
   public static getInstance() {
-    if (SharedPreference.sharedPreference) {
-      return SharedPreference.sharedPreference;
-    } else {
-      return new SharedPreference();
+    if (!SharedPreference._shared) {
+      SharedPreference._shared = new SharedPreference();
     }
+    return SharedPreference._shared;
   }
 
   private redis: Map<string, string> = new Map();
