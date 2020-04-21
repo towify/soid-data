@@ -2,25 +2,28 @@
   "name": "soid-data",
   "description": "soid data utils",
   "license": "ISC",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
     "build": "webpack",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch:build": "webpack --watch",
     "watch:server": "nodemon \"./dist/main.js\" --watch \"./build\" "
   },
+  "bundleDependencies": false,
   "dependencies": {
     "@babel/runtime-corejs3": "^7.9.2",
     "core-js": "^2.6.11",
     "soid-stare": "^0.0.16"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
+    "@babel/core": "^7.9.0",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.8.7",
     "@types/node": "^13.11.1",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^8.1.0",
     "ts-loader": "^6.2.2",
     "tslint": "^6.1.0",
     "tslint-loader": "^3.5.4",
@@ -28,5 +31,5 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.10"
   },
-  "version": "0.0.2"
+  "version": "0.0.7"
 }

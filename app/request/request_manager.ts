@@ -74,7 +74,6 @@ export function request(
   const ignoreCache = options.ignoreCache || DefaultRequestOption.ignoreCache;
   const headers = options.headers || DefaultRequestOption.headers;
   const timeout = options.timeout || DefaultRequestOption.timeout;
-
   return new Promise<RequestResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, withQuery(url, queryParams));

@@ -5,8 +5,10 @@ module.exports = {
   entry: {
     main: "./app/main.ts"
   },
+  devtool: "source-map",
   output: {
     filename: '[name].js',
+    library: "SOID",
     libraryTarget: "umd",
     path: path.resolve(__dirname, 'dist'),
     globalObject: "this"
@@ -19,6 +21,14 @@ module.exports = {
         exclude: [path.resolve(__dirname, "node_modules")]
       },
     ]
+  },
+  externals: {
+    lodash: {
+      commonjs: 'lodash',
+      commonjs2: 'lodash',
+      amd: 'lodash',
+      root: '_'
+    }
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"]
