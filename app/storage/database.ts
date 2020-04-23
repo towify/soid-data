@@ -22,15 +22,22 @@ export abstract class Database extends Dexie {
         .add(item)
         .then(() => resolve()).catch(reject);
     });
-  };/**
-   * 删除数据库
-   */
+  };
 
   public bulkAdd(table: string, items: { [key: string]: IndexableType }[]): Promise<Function> {
     return new Promise<Function>((resolve, reject) => {
       this
         .table(table)
         .bulkAdd(items)
+        .then(() => resolve()).catch(reject);
+    });
+  };
+
+  public bulkPut(table: string, items: { [key: string]: IndexableType }[]): Promise<Function> {
+    return new Promise<Function>((resolve, reject) => {
+      this
+        .table(table)
+        .bulkPut(items)
         .then(() => resolve()).catch(reject);
     });
   };
@@ -50,6 +57,24 @@ export abstract class Database extends Dexie {
         .then(() => resolve()).catch(reject);
     });
   };
+
+  public put(table: string, item: { [key: string]: IndexableType }): Promise<Function> {
+    return new Promise<Function>(((resolve, reject) => {
+      this
+        .table(table)
+        .put(item)
+        .then(() => resolve()).catch(reject);
+    }))
+  }
+
+  public get(table: string, primaryKey: string | number | Object): Promise<{ [key: string]: IndexableType }> {
+    return new Promise<{ [key: string]: IndexableType }>(((resolve, reject) => {
+      this
+        .table(table)
+        .get(primaryKey)
+        .then((data) => resolve(data)).catch(reject);
+    }))
+  }
 
   public find(table: string, query?: { [key: string]: IndexableType }): Promise<{ [key: string]: IndexableType }[]> {
     return new Promise<{ [p: string]: IndexableType }[]>((resolve, reject) => {
