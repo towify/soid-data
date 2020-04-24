@@ -119,4 +119,21 @@ export abstract class Database extends Dexie {
         .then(() => resolve()).catch(reject);
     });
   };
+
+  public count(table: string, query?: { [key: string]: IndexableType }): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      if (query) {
+        this
+          .table(table)
+          .where(query)
+          .count()
+          .then((result: number) => resolve(result)).catch(reject);
+      } else {
+        this
+          .table(table)
+          .count()
+          .then((result: number) => resolve(result)).catch(reject);
+      }
+    });
+  };
 }
