@@ -93,6 +93,21 @@ export abstract class Database extends Dexie {
     });
   };
 
+  public findByArray(params: {
+    table: string,
+    key: string,
+    array: (string | number)[]
+  }): Promise<{ [key: string]: IndexableType }[]> {
+    return new Promise<{ [key: string]: IndexableType }[]>((resolve, reject) => {
+      this
+        .table(params.table)
+        .where(params.key)
+        .anyOf(params.array)
+        .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
+        .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+    });
+  };
+
   public remove(table: string, query: { [key: string]: IndexableType }): Promise<Function> {
     return new Promise<Function>((resolve, reject) => {
       this
