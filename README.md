@@ -31,3 +31,12 @@ class GlobalDatabase extends Database {
 
 GlobalDatabase.getInstance().add('User', { name: 'mike' })
 ```
+## Build
+```
+npm run build
+npm run tsc
+```
+## Publish
+```
+npm publish
+```
