@@ -117,6 +117,14 @@ export abstract class Database extends Dexie {
     });
   };
 
+  public removeByIds(table: string, ids: (string | number)[]): Promise<Function> {
+    return new Promise<Function>((resolve, reject) => {
+      this
+        .table(table)
+        .bulkDelete(ids).then(() => resolve()).catch(reject);
+    });
+  };
+
   //Clear the table
   public clear(table: string): Promise<Function> {
     return new Promise<Function>((resolve, reject) => {
