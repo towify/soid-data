@@ -5,12 +5,12 @@
 
 export class ValueChecker {
   public static isHexColor(value: string) {
-    const reg = new RegExp("^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$");
+    const reg = new RegExp('^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$');
     return reg.test(value);
   }
 
   public static isRGBAColor(value: string) {
-    const reg = new RegExp("/(^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$)|(^rgba\\((\\d+),\\s*(\\d+),\\s*(\\d+)(,\\s*\\d+\\.\\d+)*\\)$)/");
+    const reg = new RegExp('/(^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$)|(^rgba\\((\\d+),\\s*(\\d+),\\s*(\\d+)(,\\s*\\d+\\.\\d+)*\\)$)/');
     return reg.test(value);
   }
 
@@ -26,18 +26,18 @@ export class ValueChecker {
   }
 
   public static isValidPassword(password: string) {
-    const regex = new RegExp("(?=.*[0-9])(?=.*[a-zA-Z]).{8,30}");
+    const regex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{8,30}');
     return regex.test(password);
   }
 
   // Chinese Personal ID Type
   public static isIdentification(id: string) {
-    const regex = new RegExp("/(^\\d{15}$)|(^\\d{17}([0-9]|X|x)$)/");
+    const regex = new RegExp('/(^\\d{15}$)|(^\\d{17}([0-9]|X|x)$)/');
     return regex.test(id);
   }
 
   public static isURL(url: string) {
-    const regex = new RegExp("/^http:\\/\\/.+\\./");
+    const regex = new RegExp('/^http:\\/\\/.+\\./');
     return regex.test(url);
   }
 
@@ -48,7 +48,12 @@ export class ValueChecker {
   }
 
   public static isValidSMSCode(smsCode: string) {
-    const regex = new RegExp("^\\d{6}$");
+    const regex = new RegExp('^\\d{6}$');
     return regex.test(smsCode);
+  }
+
+  public static IsChineseId(value: string) {
+    const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+    return reg.test(value);
   }
 }
