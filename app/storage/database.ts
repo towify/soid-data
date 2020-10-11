@@ -5,6 +5,11 @@
 
 import Dexie, { IndexableType } from 'dexie';
 
+export enum Order {
+  Asc = 'Asc',
+  Desc = 'Desc'
+}
+
 export abstract class Database extends Dexie {
 
   public readonly abstract databaseVersion: number;
@@ -76,19 +81,58 @@ export abstract class Database extends Dexie {
     }))
   }
 
-  public find(table: string, query?: { [key: string]: IndexableType }): Promise<{ [key: string]: IndexableType }[]> {
+  public find(
+    params:
+      {
+        table: string,
+        query?: { [key: string]: IndexableType },
+        sort?: { key: string, order: Order }
+      }): Promise<{ [key: string]: IndexableType }[]> {
     return new Promise<{ [p: string]: IndexableType }[]>((resolve, reject) => {
-      if (query) {
-        this
-          .table(table)
-          .where(query)
-          .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-          .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+      if (params.query) {
+        if (params.sort) {
+          if (params.sort.order === Order.Desc) {
+            this
+              .table(params.table)
+              .where(params.query)
+              .reverse()
+              .sortBy(params.sort.key)
+              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+          } else {
+            this
+              .table(params.table)
+              .where(params.query)
+              .sortBy(params.sort.key)
+              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+          }
+        } else {
+          this
+            .table(params.table)
+            .where(params.query)
+            .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
+            .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+        }
       } else {
-        this
-          .table(table)
-          .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-          .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+        if (params.sort) {
+          if(params.sort.order===Order.Desc){
+            this
+              .table(params.table)
+              .reverse()
+              .sortBy(params.sort.key)
+              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+          }else{
+            this
+              .table(params.table)
+              .orderBy(params.sort.key)
+              .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
+              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+          }
+        } else {
+          this
+            .table(params.table)
+            .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
+            .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+        }
       }
     });
   };
