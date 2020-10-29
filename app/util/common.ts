@@ -4,7 +4,9 @@
  */
 
 export const CommonUtil = {
-  getRandomId: (prefix?: string) => (prefix || '') + Math.random().toString(16).substr(2),
+  getRandomId: (prefix?: string) => {
+    return ((prefix || '') + Math.random().toString(16).substr(2)).substring(0, 12)
+  },
   hexToRgba: (hex: string, alpha = 1): string => {
     let color: any;
     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
