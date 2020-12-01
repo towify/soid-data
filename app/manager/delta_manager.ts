@@ -2,33 +2,34 @@
  * @author kaysaith
  * @date 2020/10/6 15:19
  */
+
 /*
  * @author kaysaith
  * @date 2020/4/24 19:00
  */
 
-export class DeltaEventManager {
+export class DeltaEventManager<T> {
   #resizeTime: number | undefined;
   #timeout: boolean = false;
   #delta: number = 200;
-  #event?: () => void;
+  #event?: (data?: T) => void;
   #handler?: number;
-  readonly #watcher: () => void;
+  readonly #watcher: (data?: T) => void;
 
   constructor() {
-    this.#watcher = () => {
+    this.#watcher = (data?: T) => {
       this.#resizeTime = new Date().getTime();
       if (!this.#timeout) {
         this.#timeout = true;
-        this.#handler = window.setTimeout(endEvent, this.#delta);
+        this.#handler = window.setTimeout(() => endEvent(data), this.#delta);
       }
     };
-    const endEvent = () => {
+    const endEvent = (data?: T) => {
       if (new Date().getTime() - this.#resizeTime! < this.#delta) {
-        this.#handler = window.setTimeout(endEvent, this.#delta);
+        this.#handler = window.setTimeout(() => endEvent(data), this.#delta);
       } else {
         this.#timeout = false;
-        !this.#event || this.#event();
+        !this.#event || this.#event(data);
         window.clearTimeout(this.#handler);
       }
     };
@@ -39,12 +40,12 @@ export class DeltaEventManager {
     return this;
   }
 
-  setEvent(event: () => void) {
+  setEvent(event: (data?: T) => void) {
     this.#event = event;
     return this;
   }
 
-  getWatcher(): void {
-    return this.#watcher();
+  getWatcher(data?: T): void {
+    return this.#watcher(data);
   }
 }

@@ -3,21 +3,17 @@
  * @date 2020/3/12 13:15
  */
 
-import { Nullable } from "../type/nullable";
-
 class SharedPreference {
-  public static _shared: SharedPreference | undefined;
+  static shared?: SharedPreference;
 
   public static getInstance() {
-    if (!SharedPreference._shared) {
-      SharedPreference._shared = new SharedPreference();
-    }
-    return SharedPreference._shared;
+    SharedPreference.shared ??= new SharedPreference();
+    return SharedPreference.shared;
   }
 
   private redis: Map<string, string> = new Map();
 
-  private constructor() { }
+  private constructor() {}
 
   public delete(key: string) {
     return new Promise((resolve) => {
@@ -27,18 +23,12 @@ class SharedPreference {
     });
   }
 
-  public get(key: string): Nullable<string> {
-    const redisValue = this.redis.get(key);
-    if (redisValue) {
-      return new Nullable(false, redisValue);
-    } else {
-      const result = localStorage.getItem(key);
-      if (result) {
-        return new Nullable(false, result);
-      } else {
-        return new Nullable(true);
-      }
+  public get(key: string) {
+    let redisValue = this.redis.get(key);
+    if (!redisValue) {
+      redisValue = localStorage.getItem(key) || undefined;
     }
+    return redisValue;
   }
 
   public save(key: string, value: string) {
