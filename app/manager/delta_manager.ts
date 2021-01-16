@@ -8,28 +8,28 @@
  * @date 2020/4/24 19:00
  */
 
-export class DeltaEventManager<T> {
+export class DeltaEventManager {
   #resizeTime: number | undefined;
   #timeout: boolean = false;
   #delta: number = 200;
-  #event?: (data?: T) => void;
+  #event?: (...args: any[]) => void;
   #handler?: number;
-  readonly #watcher: (data?: T) => void;
+  readonly #watcher: (...args: any[]) => void;
 
   constructor() {
-    this.#watcher = (data?: T) => {
+    this.#watcher = (...args: any[]) => {
       this.#resizeTime = new Date().getTime();
       if (!this.#timeout) {
         this.#timeout = true;
-        this.#handler = window.setTimeout(() => endEvent(data), this.#delta);
+        this.#handler = window.setTimeout(() => endEvent(...args), this.#delta);
       }
     };
-    const endEvent = (data?: T) => {
+    const endEvent = (...args: any[]) => {
       if (new Date().getTime() - this.#resizeTime! < this.#delta) {
-        this.#handler = window.setTimeout(() => endEvent(data), this.#delta);
+        this.#handler = window.setTimeout(() => endEvent(...args), this.#delta);
       } else {
         this.#timeout = false;
-        !this.#event || this.#event(data);
+        !this.#event || this.#event(...args);
         window.clearTimeout(this.#handler);
       }
     };
@@ -40,12 +40,12 @@ export class DeltaEventManager<T> {
     return this;
   }
 
-  setEvent(event: (data?: T) => void) {
+  setEvent(event: (...args: any[]) => void) {
     this.#event = event;
     return this;
   }
 
-  getWatcher(data?: T): void {
-    return this.#watcher(data);
+  getWatcher(...args: any[]): void {
+    return this.#watcher(...args);
   }
 }
