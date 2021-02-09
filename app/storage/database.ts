@@ -114,13 +114,13 @@ export abstract class Database extends Dexie {
         }
       } else {
         if (params.sort) {
-          if(params.sort.order===Order.Desc){
+          if (params.sort.order === Order.Desc) {
             this
               .table(params.table)
               .reverse()
               .sortBy(params.sort.key)
               .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-          }else{
+          } else {
             this
               .table(params.table)
               .orderBy(params.sort.key)
@@ -166,6 +166,15 @@ export abstract class Database extends Dexie {
       this
         .table(table)
         .bulkDelete(ids).then(() => resolve()).catch(reject);
+    });
+  };
+
+  public removeByKeyArray(params: { table: string, key: string, array: (string | number)[] }): Promise<Function> {
+    return new Promise<Function>((resolve, reject) => {
+      this
+        .table(params.table)
+        .where(params.key).anyOf(params.array)
+        .delete().then(() => resolve()).catch(reject);
     });
   };
 

@@ -33,10 +33,14 @@ GlobalDatabase.getInstance().add('User', { name: 'mike' })
 ```
 ## Build
 ```
-npm run build
 npm run tsc
 ```
 ## Publish
 ```
 npm publish
+```
+## Local test
+```shell
+npm run build
+run index.html
 ```
