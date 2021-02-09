@@ -3,41 +3,37 @@
  * @date 2020/10/29 10:55
  */
 
-import exp from 'constants';
-
 export class EventObserverService {
-  private static _bus: EventObserverService | undefined;
-  readonly #eventMap: Map<string, (message: any) => void>;
+  private static instance?: EventObserverService;
+  readonly #events: { [key: string]: { [key: string]: (message: any) => void } };
 
   private constructor() {
-    this.#eventMap = new Map();
+    this.#events = {};
   }
 
-  static getInstance() {
-    if (!EventObserverService._bus) {
-      EventObserverService._bus = new EventObserverService();
-    }
-    return EventObserverService._bus;
+  static getInstance(): EventObserverService {
+    EventObserverService.instance ??= new EventObserverService();
+    return EventObserverService.instance;
   }
 
-  register(name: string, event: (message?: any) => void): this {
-    this.#eventMap.set(name, event);
+  register(name: string, key: string, event: (message?: any) => void): this {
+    this.#events[name] ??= {};
+    this.#events[name][key] = event;
     return this;
   }
 
   unregister(name: string): boolean {
-    if (this.#eventMap.has(name)) {
-      this.#eventMap.delete(name);
+    if (this.#events[name]?.length) {
+      this.#events[name] = {};
+      delete this.#events[name];
       return true;
     }
     return false;
   }
 
-  notify(name: string, message?: any): boolean {
-    if (this.#eventMap.has(name)) {
-      this.#eventMap.get(name)!(message);
-      return true;
-    }
-    return false;
+  notify(name: string, message?: any) {
+    Object.values(this.#events[name]).forEach(event => {
+      event(message);
+    });
   }
 }
