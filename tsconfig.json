@@ -3,6 +3,7 @@
     "strict": true,
     "target": "es6",
     "lib": ["es2017", "es7", "es6", "dom"],
+    "module": "commonJS",
     "moduleResolution": "node",
     "declaration": true,
     "noImplicitAny": true,
