@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "tsc": "tsc",
+    "tsc": "tsc --build --force",
     "build": "webpack",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -31,5 +31,5 @@
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
-  "version": "0.0.41"
+  "version": "0.0.42"
 }
