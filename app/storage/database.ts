@@ -4,6 +4,8 @@
  */
 
 import Dexie, { IndexableType } from 'dexie';
+import Collection = Dexie.Collection;
+import Table = Dexie.Table;
 
 export enum Order {
   Asc = 'Asc',
@@ -86,54 +88,43 @@ export abstract class Database extends Dexie {
       {
         table: string,
         query?: { [key: string]: IndexableType },
-        sort?: { key: string, order: Order }
+        sort?: { key: string, order: Order },
+        pageIndex?: number,
+        pageSize?: number
       }): Promise<{ [key: string]: IndexableType }[]> {
-    return new Promise<{ [p: string]: IndexableType }[]>((resolve, reject) => {
+    return new Promise<{ [key: string]: IndexableType }[]>((resolve, reject) => {
+      const index = params.pageIndex || 0;
+      const limit = params.pageSize || 0;
+      const offset = index * limit;
+      const table = this.table(params.table);
+      let collection: Collection<any, any> | undefined;
       if (params.query) {
-        if (params.sort) {
-          if (params.sort.order === Order.Desc) {
-            this
-              .table(params.table)
-              .where(params.query)
-              .reverse()
-              .sortBy(params.sort.key)
-              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-          } else {
-            this
-              .table(params.table)
-              .where(params.query)
-              .sortBy(params.sort.key)
-              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-          }
-        } else {
-          this
-            .table(params.table)
-            .where(params.query)
-            .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-            .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-        }
-      } else {
-        if (params.sort) {
-          if (params.sort.order === Order.Desc) {
-            this
-              .table(params.table)
-              .reverse()
-              .sortBy(params.sort.key)
-              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-          } else {
-            this
-              .table(params.table)
-              .orderBy(params.sort.key)
-              .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-              .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-          }
-        } else {
-          this
-            .table(params.table)
-            .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-            .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-        }
+        collection = table.where(params.query);
       }
+      if (offset >= 0 && limit > 0) {
+        if (!collection) {
+          collection = table.toCollection();
+        }
+        collection = collection.offset(offset).limit(limit);
+      }
+      if (params.sort) {
+        if (!collection) {
+          collection = table.toCollection();
+        }
+        if (params.sort.order === Order.Desc) {
+          collection = collection.reverse();
+        }
+        collection
+          .sortBy(params.sort.key)
+          .then((result: { [key: string]: IndexableType }[]) => resolve(result))
+          .catch(reject);
+        return;
+      }
+      if(!collection){
+        collection = table.toCollection();
+      }
+      collection.toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
+        .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
     });
   };
 
@@ -175,6 +166,23 @@ export abstract class Database extends Dexie {
         .table(params.table)
         .where(params.key).anyOf(params.array)
         .delete().then(() => resolve()).catch(reject);
+    });
+  };
+
+  public count(table: string, query?: { [key: string]: IndexableType }): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      if (query) {
+        this
+          .table(table)
+          .where(query)
+          .count()
+          .then((result: number) => resolve(result)).catch(reject);
+      } else {
+        this
+          .table(table)
+          .count()
+          .then((result: number) => resolve(result)).catch(reject);
+      }
     });
   };
 
