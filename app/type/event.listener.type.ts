@@ -5,6 +5,7 @@
 
 export enum ListenerType {
   Click = "click",
+  DoubleClick = 'dbclick',
   Input = "input",
   Focus = "focus",
   Blur = "blur",

@@ -5,7 +5,6 @@
 
 import Dexie, { IndexableType } from 'dexie';
 import Collection = Dexie.Collection;
-import Table = Dexie.Table;
 
 export enum Order {
   Asc = 'Asc',
@@ -22,65 +21,37 @@ export abstract class Database extends Dexie {
     super(value);
   }
 
-  public add(table: string, item: { [key: string]: IndexableType }): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .add(item)
-        .then(() => resolve()).catch(reject);
-    });
+  public async add(table: string, item: { [key: string]: IndexableType }) {
+    return this.table(table).add(item);
   };
 
-  public bulkAdd(table: string, items: { [key: string]: IndexableType }[]): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .bulkAdd(items)
-        .then(() => resolve()).catch(reject);
-    });
+  public async bulkAdd(table: string, items: { [key: string]: IndexableType }[]) {
+    return this.table(table).bulkAdd(items);
   };
 
-  public bulkPut(table: string, items: { [key: string]: IndexableType }[]): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .bulkPut(items)
-        .then(() => resolve()).catch(reject);
-    });
+  public async bulkPut(table: string, items: { [key: string]: IndexableType }[]) {
+    return this.table(table).bulkPut(items);
   };
 
-  public update(
+  public async update(
     params: {
       table: string,
       query: { [key: string]: IndexableType },
       changes: { [key: string]: IndexableType }
     }
-  ): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(params.table)
-        .where(params.query)
-        .modify(params.changes)
-        .then(() => resolve()).catch(reject);
-    });
+  ) {
+    return this.table(params.table).where(params.query).modify(params.changes);
   };
 
-  public put(table: string, item: { [key: string]: IndexableType }): Promise<Function> {
-    return new Promise<Function>(((resolve, reject) => {
-      this
-        .table(table)
-        .put(item)
-        .then(() => resolve()).catch(reject);
-    }))
+  public async put(table: string, item: { [key: string]: IndexableType }) {
+    return this.table(table).put(item);
   }
 
-  public get(table: string, primaryKey: string | number | Object): Promise<{ [key: string]: IndexableType }> {
-    return new Promise<{ [key: string]: IndexableType }>(((resolve, reject) => {
-      this
-        .table(table)
-        .get(primaryKey)
-        .then((data) => resolve(data)).catch(reject);
-    }))
+  public async get(
+    table: string,
+    primaryKey: IndexableType
+  ): Promise<{ [key: string]: IndexableType }> {
+    return this.table(table).get(primaryKey);
   }
 
   public find(
@@ -114,17 +85,15 @@ export abstract class Database extends Dexie {
         if (params.sort.order === Order.Desc) {
           collection = collection.reverse();
         }
-        collection
-          .sortBy(params.sort.key)
-          .then((result: { [key: string]: IndexableType }[]) => resolve(result))
-          .catch(reject);
+        collection.sortBy(params.sort.key).then((result: { [key: string]: IndexableType }[]) => resolve(
+          result)).catch(reject);
         return;
       }
-      if(!collection){
+      if (!collection) {
         collection = table.toCollection();
       }
-      collection.toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-        .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+      collection.toArray((dataList: { [key: string]: IndexableType }[]) => dataList).then((result: { [key: string]: IndexableType }[]) => resolve(
+        result)).catch(reject);
     });
   };
 
@@ -134,73 +103,40 @@ export abstract class Database extends Dexie {
     array: (string | number)[]
   }): Promise<{ [key: string]: IndexableType }[]> {
     return new Promise<{ [key: string]: IndexableType }[]>((resolve, reject) => {
-      this
-        .table(params.table)
-        .where(params.key)
-        .anyOf(params.array)
-        .toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
-        .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
+      this.table(params.table).where(params.key).anyOf(params.array).toArray((dataList: { [key: string]: IndexableType }[]) => dataList).then(
+        (result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
     });
   };
 
-  public remove(table: string, query: { [key: string]: IndexableType }): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .where(query)
-        .delete().then(() => resolve()).catch(reject);
-    });
+  public async remove(table: string, query: { [key: string]: IndexableType }) {
+    return this.table(table).where(query).delete();
   };
 
-  public removeByIds(table: string, ids: (string | number)[]): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .bulkDelete(ids).then(() => resolve()).catch(reject);
-    });
+  public async removeByIds(table: string, ids: (string | number)[]) {
+    return this.table(table).bulkDelete(ids);
   };
 
-  public removeByKeyArray(params: { table: string, key: string, array: (string | number)[] }): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(params.table)
-        .where(params.key).anyOf(params.array)
-        .delete().then(() => resolve()).catch(reject);
-    });
+  public async removeByKeyArray(params: { table: string, key: string, array: (string | number)[] }) {
+    return this.table(params.table).where(params.key).anyOf(params.array).delete();
   };
 
   public count(table: string, query?: { [key: string]: IndexableType }): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       if (query) {
-        this
-          .table(table)
-          .where(query)
-          .count()
-          .then((result: number) => resolve(result)).catch(reject);
+        this.table(table).where(query).count().then((result: number) => resolve(result)).catch(
+          reject);
       } else {
-        this
-          .table(table)
-          .count()
-          .then((result: number) => resolve(result)).catch(reject);
+        this.table(table).count().then((result: number) => resolve(result)).catch(reject);
       }
     });
   };
 
   //Clear the table
-  public clear(table: string): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      this
-        .table(table)
-        .clear()
-        .then(() => resolve()).catch(reject);
-    });
+  public async clear(table: string) {
+    return this.table(table).clear();
   };
 
-  public deleteDatabase(): Promise<Function> {
-    return new Promise<Function>((resolve, reject) => {
-      Dexie
-        .delete(this.name)
-        .then(() => resolve()).catch(reject);
-    });
+  public async deleteDatabase() {
+    return Dexie.delete(this.name);
   };
 }
