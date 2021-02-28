@@ -5,7 +5,6 @@
 
 import Dexie, { IndexableType } from 'dexie';
 import Collection = Dexie.Collection;
-import Table = Dexie.Table;
 
 export enum Order {
   Asc = 'Asc',
