@@ -16,7 +16,7 @@ export class EventObserverService {
     return EventObserverService.instance;
   }
 
-  register(name: string, key: string, event: (message?: any) => void): this {
+  register<T>(name: string, key: string, event: (message?: T) => void): this {
     this.#events[name] ??= {};
     this.#events[name][key] = event;
     return this;
@@ -32,7 +32,7 @@ export class EventObserverService {
   }
 
   notify(name: string, message?: any) {
-    Object.values(this.#events[name]).forEach(event => {
+    this.#events[name] && Object.values(this.#events[name]).forEach(event => {
       event(message);
     });
   }
