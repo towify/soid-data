@@ -16,13 +16,13 @@ export class EventObserverService {
     return EventObserverService.instance;
   }
 
-  register<T>(name: string, key: string, event: (message?: T) => void): this {
+  public register<T>(name: string, key: string, event: (message?: T) => void): this {
     this.#events[name] ??= {};
     this.#events[name][key] = event;
     return this;
   }
 
-  unregister(name: string): boolean {
+  public unregister(name: string): boolean {
     if (this.#events[name]?.length) {
       this.#events[name] = {};
       delete this.#events[name];
@@ -31,7 +31,7 @@ export class EventObserverService {
     return false;
   }
 
-  notify(name: string, message?: any) {
+  public notify(name: string, message?: any) {
     this.#events[name] && Object.values(this.#events[name]).forEach(event => {
       event(message);
     });
