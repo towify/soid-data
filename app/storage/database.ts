@@ -108,6 +108,23 @@ export abstract class Database extends Dexie {
     });
   };
 
+  public findCountByArray(params: {
+    table: string,
+    key: string,
+    array: (string | number)[]
+  }): Promise<{ [key: string]: number }> {
+    return new Promise<{ [key: string]: number }>((resolve, reject) => {
+      const result: { [key: string]: number } = {}
+      this
+        .table(params.table)
+        .where(params.key)
+        .anyOf(params.array)
+        .eachKey(value => {
+          result[<string>value] = (result[<string>value] || 0) + 1;
+        }).then(() => resolve(result)).catch(reject);
+    });
+  };
+
   public async remove(table: string, query: { [key: string]: IndexableType }) {
     return this.table(table).where(query).delete();
   };
