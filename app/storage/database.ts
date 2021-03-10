@@ -119,7 +119,7 @@ export abstract class Database extends Dexie {
           .catch(reject);
         return;
       }
-      if(!collection){
+      if (!collection) {
         collection = table.toCollection();
       }
       collection.toArray((dataList: { [key: string]: IndexableType }[]) => dataList)
@@ -141,6 +141,24 @@ export abstract class Database extends Dexie {
         .then((result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
     });
   };
+
+  public findCountByArray(params: {
+    table: string,
+    key: string,
+    array: (string | number)[]
+  }): Promise<{ [key: string]: number }> {
+    return new Promise<{ [key: string]: number }>((resolve, reject) => {
+      const result: { [key: string]: number } = {}
+      this
+        .table(params.table)
+        .where(params.key)
+        .anyOf(params.array)
+        .eachKey(value => {
+          result[<string>value] = (result[<string>value] || 0) + 1;
+      }).then(() => resolve(result)).catch(reject);
+    });
+  };
+
 
   public remove(table: string, query: { [key: string]: IndexableType }): Promise<Function> {
     return new Promise<Function>((resolve, reject) => {

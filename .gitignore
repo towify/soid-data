@@ -7,3 +7,4 @@
 node_modules/
 /.tscache
 !.gitignore
+/package-lock.json
