@@ -15,12 +15,9 @@ class SharedPreference {
 
   private constructor() {}
 
-  public delete(key: string) {
-    return new Promise((resolve) => {
-      this.redis.delete(key);
-      localStorage.removeItem(key);
-      resolve();
-    });
+  public async delete(key: string) {
+    this.redis.delete(key);
+    await localStorage.removeItem(key);
   }
 
   public get(key: string) {
@@ -31,12 +28,9 @@ class SharedPreference {
     return redisValue;
   }
 
-  public save(key: string, value: string) {
-    return new Promise((resolve) => {
-      this.redis.set(key, value);
-      localStorage.setItem(key, value);
-      resolve();
-    });
+  public async save(key: string, value: string) {
+    this.redis.set(key, value);
+    return localStorage.setItem(key, value);
   }
 }
 

@@ -19,7 +19,7 @@ export const DefaultRequestOption = {
     Accept: "application/json, text/javascript, text/plain",
   },
   // default max duration for a request
-  timeout: 5000,
+  timeout: 10000,
 };
 
 export type RequestResult = {
