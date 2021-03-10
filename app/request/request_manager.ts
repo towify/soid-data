@@ -19,7 +19,7 @@ export const DefaultRequestOption = {
     Accept: "application/json, text/javascript, text/plain",
   },
   // default max duration for a request
-  timeout: 5000,
+  timeout: 10000,
 };
 
 export type RequestResult = {
@@ -31,7 +31,7 @@ export type RequestResult = {
   headers: string;
 }
 
-function queryParams(params: any = {}) {
+function queryParams(params: any = {}): string {
   return Object.keys(params)
     .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
     .join("&");
@@ -65,19 +65,18 @@ function errorResponse(xhr: XMLHttpRequest, message: string | null = null): Requ
 }
 
 export function request(
-  method: "get" | "post",
+  method: "get" | "post" | "put" | "delete",
   url: string,
   queryParams: any = {},
   body: any = null,
   options: RequestOptions = DefaultRequestOption
-) {
+): Promise<RequestResult> {
   const ignoreCache = options.ignoreCache || DefaultRequestOption.ignoreCache;
   const headers = options.headers || DefaultRequestOption.headers;
   const timeout = options.timeout || DefaultRequestOption.timeout;
   return new Promise<RequestResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, withQuery(url, queryParams));
-
     if (headers) {
       Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
     }
@@ -100,7 +99,7 @@ export function request(
       resolve(errorResponse(xhr, "Request took longer than expected."));
     };
 
-    if (method === "post" && body) {
+    if (body && (method === "post" || method === "put")) {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.send(JSON.stringify(body));
     } else {
