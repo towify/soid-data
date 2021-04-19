@@ -97,15 +97,20 @@ export abstract class Database extends Dexie {
     });
   };
 
-  public findByArray(params: {
+  public async findByArray(params: {
     table: string,
     key: string,
-    array: (string | number)[]
+    array: (string | number)[],
+    sort?: { key: string, order: Order }
   }): Promise<{ [key: string]: IndexableType }[]> {
-    return new Promise<{ [key: string]: IndexableType }[]>((resolve, reject) => {
-      this.table(params.table).where(params.key).anyOf(params.array).toArray((dataList: { [key: string]: IndexableType }[]) => dataList).then(
-        (result: { [key: string]: IndexableType }[]) => resolve(result)).catch(reject);
-    });
+    let collection = this.table(params.table).where(params.key).anyOf(params.array)
+    if (params.sort) {
+      if (params.sort.order === Order.Desc) {
+        collection = collection.reverse();
+      }
+      return collection.sortBy(params.sort.key);
+    }
+    return collection.toArray();
   };
 
   public findCountByArray(params: {
