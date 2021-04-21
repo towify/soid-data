@@ -3,7 +3,12 @@
  * @date 2020/4/19 13:19
  */
 
+export type Merge<T> = { [K in keyof T]: T[K] };
+
 export const CommonUtil = {
+  splitString(content: string) {
+    return content.match(/[A-Z][a-z]+|[0-9]+/g)?.join(' ');
+  },
   getRandomId: (prefix?: string) => {
     return ((prefix || '') + Math.random().toString(16).substr(2)).substring(0, 12)
   },
