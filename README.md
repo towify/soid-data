@@ -69,10 +69,10 @@ deltaEventManager = new DeltaEventManager()
 	});
 	
 // 4.方法调用
-deltaEventManager.getWatcher(1);
-deltaEventManager.getWatcher(1);
+deltaEventManager.getWatcher();
+deltaEventManager.getWatcher();
 setTimeout(() => {
-  deltaEventManager.getWatcher(1);
+  deltaEventManager.getWatcher();
 }, 1000);
 ```
 
