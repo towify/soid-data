@@ -1,46 +1,74 @@
-# soid-data
+[TOC]
+
+# solid-data
 
 ## Description
-utils for request, storage and data etc.
+
+Towify`s development kit,contain request, storage and data etc.
+
+- delta_manager：
+- request_manager：网络请求
+- event_observer：事件监听
+- database：数据库
+- shared_preference：偏好设置
+- nullable
+- array.util
+- common
+- md5
+- object.util
+- performance
+- value_checker
 
 ## Install
+
+This project uses `node` and `npm`.Go check them out if you don`t have them locally installed.
 
 ```
 npm install soid-data
 ```
 ## Usage
 
-```
-class GlobalDatabase extends Database {
-  public static getInstance(): Database {
-    if (!GlobalDatabase._database) {
-      GlobalDatabase._database = new GlobalDatabase();
-    }
-    return GlobalDatabase._database;
-  }
+### 1.delta_manager
 
-  private static _database: Database | undefined;
-  public readonly tableDefined = { User: '++id,name' };
-  public readonly databaseVersion = 1;
+### 2.request_manager
 
-  private constructor() {
-    super('MyDatabase');
-    this.version(this.databaseVersion).stores(this.tableDefined);
-  }
-}
+### 3.event_observer
 
-GlobalDatabase.getInstance().add('User', { name: 'mike' })
-```
-## Build
-```
-npm run tsc
-```
-## Publish
-```
-npm publish
-```
-## Local test
+### 4.database
+
+### 5.shared_preference
+
+### 6.nullable
+
+### 7.array.util
+
+### 8.common
+
+### 9.md5
+
+### 10.object.util
+
+### 11.performance
+
+### 12.value_checker
+
+
+
+## Other
+
+### Local test
+
 ```shell
 npm run build
 run index.html
+```
+
+### Build
+
+```
+npm run tsc
+```
+### Publish
+```
+npm publish
 ```
