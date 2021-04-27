@@ -4,7 +4,7 @@
  */
 
 export * from './storage/database';
-export * from './request/request_manager';
+export * from './manager/request_manager';
 export * from './storage/shared_preference';
 export * from './type/nullable';
 export * from './util/common';
