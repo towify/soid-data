@@ -5,23 +5,44 @@
 
 export class EventObserverService {
   private static instance?: EventObserverService;
-  readonly #events: { [key: string]: { [key: string]: (message: any) => void } };
+  readonly #events: {
+    [key: string]: { [key: string]: (message: any) => void };
+  };
 
   private constructor() {
     this.#events = {};
   }
 
+  /**
+   * @description: 获取单利对象
+   */
   static getInstance(): EventObserverService {
     EventObserverService.instance ??= new EventObserverService();
     return EventObserverService.instance;
   }
 
-  public register<T>(name: string, key: string, event: (message?: T) => void): this {
+  /**
+   * @description: 注册监听事件
+   * @param {string} name 主标识
+   * @param {string} key  子标识
+   * @param {function} event 事件回调
+   * @return {*}
+   */
+  public register<T>(
+    name: string,
+    key: string,
+    event: (message?: T) => void
+  ): this {
     this.#events[name] ??= {};
     this.#events[name][key] = event;
     return this;
   }
 
+  /**
+   * @description: 移除主标识对应的所有回调
+   * @param {string} name 主标识
+   * @return {*}
+   */
   public unregister(name: string): boolean {
     if (this.#events[name]?.length) {
       this.#events[name] = {};
@@ -31,9 +52,16 @@ export class EventObserverService {
     return false;
   }
 
+  /**
+   * @description: 发送消息
+   * @param {string} name 主标识
+   * @param {any} message 消息
+   * @return {*}
+   */
   public notify(name: string, message?: any) {
-    this.#events[name] && Object.values(this.#events[name]).forEach(event => {
-      event(message);
-    });
+    this.#events[name] &&
+      Object.values(this.#events[name]).forEach((event) => {
+        event(message);
+      });
   }
 }
