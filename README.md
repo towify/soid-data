@@ -8,7 +8,7 @@ Towify`s development kit,contain request, storage and data etc.
 
 - DeltaEventManager：事件过滤
 - RequestManager：网络请求
-- event_observer：事件监听
+- EventObserverService：事件监听
 - database：数据库
 - shared_preference：偏好设置
 - nullable
@@ -154,7 +154,61 @@ RequestManager.request('get', url, params, null, requestOption).then(
 );
 ```
 
-### 3.event_observer
+
+
+### 3.EventObserverService
+
+事件监听，也可以理解为通知中心，用于多方对某一变化做出不同响应
+
+
+
+**EventObserverService 方法：**
+
+| 方法        | 说明           |
+| ----------- | -------------- |
+| getInstance | *获取单利对象* |
+| register    | 注册监听       |
+| notify      | 发送消息       |
+| unregister  | 移除监听       |
+
+
+
+**使用示例：**
+
+```
+// 1.在 A 类中注册监听事件
+EventObserverService.getInstance().register<string>(
+  'property',
+  'class A',
+  (message?: string) => {
+  	console.log(`A ${message}`);
+  }
+);
+
+// 2.在 B 类中注册监听事件
+EventObserverService.getInstance().register<string>(
+  'property',
+  'class B',
+  (message?: string) => {
+  	console.log(`B ${message}`);
+  }
+);
+
+// 4.任意位置发送消息，上述两个监听都会收到消息
+EventObserverService.getInstance().notify('property', 'message');
+
+// 5.监听结束后移除
+EventObserverService.getInstance().unregister('property');
+```
+
+执行结果
+
+```
+A message
+B message
+```
+
+
 
 ### 4.database
 
