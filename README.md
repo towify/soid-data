@@ -129,6 +129,9 @@ setTimeout(() => {
 **使用示例：**
 
 ```
+// 导入 RequestManager RequestOptions RequestResult
+import { RequestManager, RequestOptions, RequestResult } from 'soid-data';
+
 // 1.准备 url
 const url = 'https://sls-api-dev.towify.com/global/getClientIp';
 
@@ -176,6 +179,9 @@ RequestManager.request('get', url, params, null, requestOption).then(
 **使用示例：**
 
 ```
+// 导入 EventObserverService
+import { EventObserverService } from 'soid-data';
+
 // 1.在 A 类中注册监听事件
 EventObserverService.getInstance().register<string>(
   'property',
