@@ -11,7 +11,7 @@ export type RequestOptions = {
   headers?: { [key: string]: string };
   // 0 (or negative) to wait forever
   timeout?: number;
-}
+};
 
 export const DefaultRequestOption = {
   ignoreCache: false,
@@ -29,81 +29,120 @@ export type RequestResult = {
   data: string;
   json: <T>() => T;
   headers: string;
-}
+};
 
-function queryParams(params: any = {}): string {
-  return Object.keys(params)
-    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-    .join("&");
-}
+export class RequestManager {
+  /**
+   * @description: 发起网络请求
+   * @param {string} method 请求方法, "get" | "post" | "put" | "delete",
+   * @param {string} url 请求地址
+   * @param {any} queryParams 请求参数
+   * @param {any} body 请求题
+   * @param { RequestOptions } options 请求配置
+   * @return {Promise<RequestResult>}
+   */
+  public static request(
+    method: "get" | "post" | "put" | "delete",
+    url: string,
+    queryParams: any = {},
+    body: any = null,
+    options: RequestOptions = DefaultRequestOption
+  ): Promise<RequestResult> {
+    const ignoreCache = options.ignoreCache || DefaultRequestOption.ignoreCache;
+    const headers = options.headers || DefaultRequestOption.headers;
+    const timeout = options.timeout || DefaultRequestOption.timeout;
+    return new Promise<RequestResult>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open(method, this.withQuery(url, queryParams));
+      if (headers) {
+        Object.keys(headers).forEach((key) =>
+          xhr.setRequestHeader(key, headers[key])
+        );
+      }
 
-function withQuery(url: string, params: any = {}) {
-  const queryString = queryParams(params);
-  return queryString ? url + (url.indexOf("?") === -1 ? "?" : "&") + queryString : url;
-}
+      if (ignoreCache) {
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+      }
 
-function parseXHRResult(xhr: XMLHttpRequest): RequestResult {
-  return {
-    ok: xhr.status >= 200 && xhr.status < 300,
-    status: xhr.status,
-    statusText: xhr.statusText,
-    headers: xhr.getAllResponseHeaders(),
-    data: xhr.responseText,
-    json: <T>() => JSON.parse(xhr.responseText) as T,
-  };
-}
+      xhr.timeout = timeout;
 
-function errorResponse(xhr: XMLHttpRequest, message: string | null = null): RequestResult {
-  return {
-    ok: false,
-    status: xhr.status,
-    statusText: xhr.statusText,
-    headers: xhr.getAllResponseHeaders(),
-    data: message || xhr.statusText,
-    json: <T>() => JSON.parse(message || xhr.statusText) as T,
-  };
-}
+      xhr.onload = (evt) => {
+        resolve(this.parseXHRResult(xhr));
+      };
 
-export function request(
-  method: "get" | "post" | "put" | "delete",
-  url: string,
-  queryParams: any = {},
-  body: any = null,
-  options: RequestOptions = DefaultRequestOption
-): Promise<RequestResult> {
-  const ignoreCache = options.ignoreCache || DefaultRequestOption.ignoreCache;
-  const headers = options.headers || DefaultRequestOption.headers;
-  const timeout = options.timeout || DefaultRequestOption.timeout;
-  return new Promise<RequestResult>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, withQuery(url, queryParams));
-    if (headers) {
-      Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
-    }
+      xhr.onerror = (evt) => {
+        resolve(this.errorResponse(xhr, "Failed to make request."));
+      };
 
-    if (ignoreCache) {
-      xhr.setRequestHeader("Cache-Control", "no-cache");
-    }
+      xhr.ontimeout = (evt) => {
+        resolve(this.errorResponse(xhr, "Request took longer than expected."));
+      };
 
-    xhr.timeout = timeout;
+      if (body && (method === "post" || method === "put")) {
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(body));
+      } else {
+        xhr.send();
+      }
+    });
+  }
 
-    xhr.onload = evt => {
-      resolve(parseXHRResult(xhr));
+  /**
+   * @description: 拼接参数
+   * @param {any} params
+   * @return {string}
+   */
+  private static queryParams(params: any = {}): string {
+    return Object.keys(params)
+      .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+      .join("&");
+  }
+
+  /**
+   * @description: 拼接 url 地址
+   * @param {string} url 请求地址
+   * @param {any} params 请求参数
+   * @return {*}
+   */
+  private static withQuery(url: string, params: any = {}) {
+    const queryString = this.queryParams(params);
+    return queryString
+      ? url + (url.indexOf("?") === -1 ? "?" : "&") + queryString
+      : url;
+  }
+
+  /**
+   * @description: 解析请求结果
+   * @param {XMLHttpRequest} xhr
+   * @return {*}
+   */
+  private static parseXHRResult(xhr: XMLHttpRequest): RequestResult {
+    return {
+      ok: xhr.status >= 200 && xhr.status < 300,
+      status: xhr.status,
+      statusText: xhr.statusText,
+      headers: xhr.getAllResponseHeaders(),
+      data: xhr.responseText,
+      json: <T>() => JSON.parse(xhr.responseText) as T,
     };
+  }
 
-    xhr.onerror = evt => {
-      resolve(errorResponse(xhr, "Failed to make request."));
+  /**
+   * @description:拼接错误
+   * @param {*}
+   * @return {*}
+   */
+  private static errorResponse(
+    xhr: XMLHttpRequest,
+    message: string | null = null
+  ): RequestResult {
+    return {
+      ok: false,
+      status: xhr.status,
+      statusText: xhr.statusText,
+      headers: xhr.getAllResponseHeaders(),
+      data: message || xhr.statusText,
+      json: <T>() => JSON.parse(message || xhr.statusText) as T,
     };
-
-    xhr.ontimeout = evt => {
-      resolve(errorResponse(xhr, "Request took longer than expected."));
-    };
-
-    if (body && (method === "post" || method === "put")) {
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify(body));
-    } else {
-      xhr.send();
-    }
-  });
+  }
 }
