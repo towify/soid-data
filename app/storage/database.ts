@@ -15,7 +15,7 @@ export abstract class Database extends Dexie {
   // 数据库版本
   public abstract readonly databaseVersion: number;
 
-  // 表字段的定义
+  // 表名及字段的定义
   public abstract readonly tableDefined: { [key: string]: string };
 
   protected constructor(value: string) {
@@ -65,7 +65,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description: 更新指定字段值的记录
+   * @description: 更新符合筛选条件的记录
    * @param {string} table 表名
    * @param {object} query 筛选条件
    * @param {object} changes 更新字段的名和值
@@ -79,7 +79,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description:
+   * @description: 获取指定主键值的记录
    * @param {IndexableType} primaryKey
    */
   public async get(
@@ -90,7 +90,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description:查询记录
+   * @description: 查询符合筛选条件的记录，并且可以设置排序规则和分页条件
    * @param {*} table 表名
    * @param {*} query 筛选条件
    * @param {*} sort 排序规则
@@ -147,11 +147,11 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description: 查询字段为某些值的记录
+   * @description: 查询字段为某些值的记录，可以指定排序规则
    * @param {*} table 表名
    * @param {*} key 字段名
    * @param {*} array 值数组
-   * @param {*} sort 排序条件
+   * @param {*} sort 排序条规则
    */
   public async findByArray(params: {
     table: string;
@@ -220,7 +220,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description: 移除记录
+   * @description: 移除符合筛选条件的记录
    * @param {string} table 表名
    * @param {object} query 筛选条件
    */
@@ -229,7 +229,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description: 移除指定 id 的记录
+   * @description: 移除指定主键值的记录
    * @param {string} table 表名
    * @param {*} ids 主键值
    */
@@ -255,7 +255,7 @@ export abstract class Database extends Dexie {
   }
 
   /**
-   * @description: 清空表
+   * @description: 清空表中所有记录
    * @param {string} table
    */
   public async clear(table: string) {

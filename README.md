@@ -9,7 +9,7 @@ Towify`s development kit,contain request, storage and data etc.
 - DeltaEventManager：事件过滤
 - RequestManager：网络请求
 - EventObserverService：事件监听
-- database：数据库
+- Database：数据库
 - shared_preference：偏好设置
 - nullable
 - array.util
@@ -167,12 +167,12 @@ RequestManager.request('get', url, params, null, requestOption).then(
 
 **EventObserverService 方法：**
 
-| 方法        | 说明           |
-| ----------- | -------------- |
-| getInstance | *获取单利对象* |
-| register    | 注册监听       |
-| notify      | 发送消息       |
-| unregister  | 移除监听       |
+| 方法        | 说明         |
+| ----------- | ------------ |
+| getInstance | 获取单利对象 |
+| register    | 注册监听     |
+| notify      | 发送消息     |
+| unregister  | 移除监听     |
 
 
 
@@ -216,7 +216,143 @@ B message
 
 
 
-### 4.database
+### 4.Database
+
+数据库相关操作
+
+**抽象类 Database 属性：**
+
+| 属性            | 说明             |
+| --------------- | ---------------- |
+| databaseVersion | 数据库版本       |
+| tableDefined    | 表名及字段的定义 |
+
+**抽象类 Database 方法：**
+
+* 数据库操作
+  * `deleteDatabase`：删除数据库
+* 表操作
+  * 增
+    * `add`：添加一条记录
+    * `bulkAdd`：添加多条记录
+  * 删
+    * `remove`：移除符合筛选条件的记录
+    * `removeByIds`：移除指定主键值的记录
+    * `removeByKeyArray`：移除字段为某些值的记录
+    * `clear`：清空表中所有记录
+  * 改
+    * `put`：更新一条记录，使用 put 相关方法更新数据需要将所有字段都带上
+    * `bulkPut`：更新多条记录
+    * `update`：更新符合筛选条件的记录
+  * 查
+    * `get`：获取指定主键值的记录
+    * `find`：查询符合筛选条件的记录，并且可以设置排序规则和分页条件
+    * `findByArray`：查询字段为某些值的记录，可以指定排序规则
+    * `count`：查询符合筛选条件的记录个数
+    * `findCountByArray`：查询不同值对应记录的数量
+
+
+
+>  首先需要声明数据库的实体类
+
+```
+// 导入 Database Order
+import { Database, Order } from 'soid-data';
+
+class GlobalDatabase extends Database {
+
+  private static _database: Database | undefined;
+	// 数据库版本
+  public readonly databaseVersion = 1;
+  // 定义表名和字段名，++ 表示字段是主键，& 表示字段值唯一，* 表示字段需要建立多值索引
+  public readonly tableDefined = { User: '++id, name, age, *type' };
+  
+  private constructor() {
+    super('MyDatabase');
+    // 初始化数据库并创建表
+    this.version(this.databaseVersion).stores(this.tableDefined);
+  }
+
+  public static getInstance(): Database {
+    if (!GlobalDatabase._database) {
+      GlobalDatabase._database = new GlobalDatabase();
+    }
+    return GlobalDatabase._database;
+  }
+}
+```
+
+**使用示例**
+
+```
+// 增加一条数据
+GlobalDatabase.getInstance().add('User', { name: 'a', age: 1, type: 'boy' });
+
+
+// 查询 age=1 的记录,查询结果按照 name 倒序排列
+GlobalDatabase.getInstance()
+  .find({
+    table: 'User',
+    query: { age: 1 },
+    sort: { key: 'name', order: Order.Desc },
+  })
+  .then((list) => console.log(list));
+
+
+// 删除 name=a 的记录
+GlobalDatabase.getInstance()
+  .remove('User', { name: 'a' })
+  .then(() => console.log('deleted'));
+  
+  
+// 更新 id=1 的记录
+GlobalDatabase.getInstance().put('User', {
+    id: 1,
+    name: 'e',
+    age: 20,
+    type: 'boy',
+  });
+
+
+// 将 id=2 的记录 age 字段值改为 30
+GlobalDatabase.getInstance()
+  .update({
+    table: 'User',
+    query: { id: 2 },
+    changes: {
+    	age: 30,
+ 		},
+	})
+	
+	
+// 查询 type 值为 boy 和 girl 的记录各多少条
+// 输出结果为 {boy: 3, girl: 2}
+GlobalDatabase.getInstance()
+  .findCountByArray({
+    table: 'User',
+    key: 'type',
+    array: ['boy', 'girl'],
+  })
+  .then((array) => {
+  	console.log(array);
+  });
+  
+// 查询 name 值为 a 或 c 的记录
+GlobalDatabase.getInstance()
+  .findByArray({
+    table: 'User',
+    key: 'name',
+    array: ['a', 'c'],
+  })
+```
+
+
+
+
+
+
+
+
 
 ### 5.shared_preference
 
