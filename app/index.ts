@@ -6,7 +6,6 @@
 export * from './storage/database';
 export * from './manager/request_manager';
 export * from './storage/shared_preference';
-export * from './type/nullable';
 export * from './util/common';
 export * from './util/md5';
 export * from './util/value_checker';
