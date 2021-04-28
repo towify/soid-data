@@ -11,7 +11,8 @@ Towify`s development kit,contain request, storage and data etc.
 - EventObserverService：事件监听
 - Database：数据库
 - SharedPreference：键值对存储
-- ArrayUtils：数组相关的方法
+- ArrayUtils：数组相关
+- StringUtils：字符串相关
 - common
 - md5
 - object.util
@@ -401,7 +402,7 @@ Shared.delete('name');
 
 
 
-使用示例
+**使用示例**
 
 ```
 // flat
@@ -412,17 +413,39 @@ const flatArray = ArrayUtils.flat<number>(array);
 
 
 
+### 7.StringUtils
+
+字符串相关的方法
 
 
-### 7.common
 
-### 8.md5
+**StringUtils 中的方法**
 
-### 9.object.util
+| 方法                  | 说明               |
+| --------------------- | ------------------ |
+| capitalizeFirstLetter | 首字母大写         |
+| toHashCode            | 获取字符串的哈希值 |
 
-### 10.performance
 
-### 11.value_checker
+
+**使用示例**
+
+```
+const result = StringUtils.capitalizeFirstLetter('yantai');
+const hashcode = StringUtils.toHashCode('test content');
+```
+
+
+
+### common
+
+### md5
+
+### object.util
+
+### performance
+
+### value_checker
 
 
 
