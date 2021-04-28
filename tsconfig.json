@@ -28,6 +28,7 @@
   "exclude": [
     "../app",
     "dist",
+    "app/test",
     "node_modules/*"
   ]
 }
