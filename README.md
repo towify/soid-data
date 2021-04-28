@@ -10,8 +10,7 @@ Towify`s development kit,contain request, storage and data etc.
 - RequestManager：网络请求
 - EventObserverService：事件监听
 - Database：数据库
-- shared_preference：偏好设置
-- nullable
+- SharedPreference：键值对存储
 - array.util
 - common
 - md5
@@ -350,25 +349,55 @@ GlobalDatabase.getInstance()
 
 
 
+### 5.SharedPreference
+
+键值对存储，在 `localStorage` 的基础上增加了内存读写
+
+**SharedPreference 中的方法**
+
+| 方法        | 说明                               |
+| ----------- | ---------------------------------- |
+| getInstance | 获取单利对象                       |
+| save        | 保存键值对，如果已经存在则进行更新 |
+| delete      | 删除键值对                         |
+| get         | 获取指定键对应的值                 |
+
+
+
+**使用示例**
+
+```
+// 导入 Shared，Shared 为 SharedPreference 的单利对象
+import { Shared } from 'soid-data';
+
+// 增加键值对
+Shared.save('name', 'Jack');
+
+// 更新 name 的值
+Shared.save('name', 'Simth');
+
+// 获取 name 的值
+const name = await Shared.get('name');
+
+// 删除 name 对应的键值对
+Shared.delete('name');
+```
 
 
 
 
-### 5.shared_preference
 
-### 6.nullable
+### 6.array.util
 
-### 7.array.util
+### 7.common
 
-### 8.common
+### 8.md5
 
-### 9.md5
+### 9.object.util
 
-### 10.object.util
+### 10.performance
 
-### 11.performance
-
-### 12.value_checker
+### 11.value_checker
 
 
 
