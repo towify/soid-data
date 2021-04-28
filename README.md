@@ -15,7 +15,7 @@ Towify`s development kit,contain request, storage and data etc.
 - StringUtils：字符串相关
 - CommonUtil：零散工具类
 - Md5：MD5 加密
-- object.util
+- ObjectUtils：Object 相关
 - performance
 - value_checker
 
@@ -510,7 +510,34 @@ Md5.hashAsciiStr('\u666e\u901a\u5b57\u7b26')
 
 
 
-### object.util
+### 10.ObjectUtils
+
+Object 相关
+
+
+
+**ObjectUtils 中的方法**
+
+| 方法     | 说明           |
+| -------- | -------------- |
+| isObject | 判断是否是对象 |
+
+
+
+**使用示例**
+
+```
+// 导入 ObjectUtils
+import { ObjectUtils } from 'soid-data';
+
+ObjectUtils.isObject([1, 2])
+```
+
+
+
+
+
+
 
 ### performance
 
