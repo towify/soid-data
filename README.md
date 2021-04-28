@@ -11,7 +11,7 @@ Towify`s development kit,contain request, storage and data etc.
 - EventObserverService：事件监听
 - Database：数据库
 - SharedPreference：键值对存储
-- array.util
+- ArrayUtils：数组相关的方法
 - common
 - md5
 - object.util
@@ -387,7 +387,32 @@ Shared.delete('name');
 
 
 
-### 6.array.util
+### 6.ArrayUtils
+
+数组相关的方法
+
+
+
+**ArrayUtils 中的方法**
+
+| 方法 | 说明                   |
+| ---- | ---------------------- |
+| flat | 将二维数组降为一维数组 |
+
+
+
+使用示例
+
+```
+// flat
+const array = [[1], [2, 3], [4, 5], [6], [7, 8]];
+const flatArray = ArrayUtils.flat<number>(array);
+// flatArray 最终为 [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+
+
+
 
 ### 7.common
 
