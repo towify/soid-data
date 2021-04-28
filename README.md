@@ -13,7 +13,7 @@ Towify`s development kit,contain request, storage and data etc.
 - SharedPreference：键值对存储
 - ArrayUtils：数组相关
 - StringUtils：字符串相关
-- common
+- CommonUtil：零散工具类
 - md5
 - object.util
 - performance
@@ -405,7 +405,9 @@ Shared.delete('name');
 **使用示例**
 
 ```
-// flat
+// 导入 ArrayUtils
+import { ArrayUtils } from 'soid-data';
+
 const array = [[1], [2, 3], [4, 5], [6], [7, 8]];
 const flatArray = ArrayUtils.flat<number>(array);
 // flatArray 最终为 [1, 2, 3, 4, 5, 6, 7, 8]
@@ -431,13 +433,52 @@ const flatArray = ArrayUtils.flat<number>(array);
 **使用示例**
 
 ```
+// 导入 StringUtils
+import { StringUtils } from 'soid-data';
+
 const result = StringUtils.capitalizeFirstLetter('yantai');
 const hashcode = StringUtils.toHashCode('test content');
 ```
 
 
 
-### common
+### 8.CommonUtil
+
+零散工具类
+
+
+
+**CommonUtil 中的方法**
+
+| 方法        | 说明                                                 |
+| ----------- | ---------------------------------------------------- |
+| splitString | 查找字符串中所有符合 `[A-Z][a-z]+|[0-9]+` 正则的字符 |
+| getRandomId | 获取随机 id                                          |
+| pickNumber  | 去除字符串中非数字的字符                             |
+| repeat      | 循环调用                                             |
+
+
+
+**使用示例**
+
+```
+// 导入 CommonUtil
+import { CommonUtil } from 'soid-data';
+
+CommonUtil.splitString('Aaas121A21aa')
+
+CommonUtil.getRandomId()
+
+CommonUtil.pickNumber('sdj12jkasfjslafkja33')
+
+CommonUtil.repeat(12, (index) => {
+	console.log(index);
+});
+```
+
+
+
+
 
 ### md5
 
