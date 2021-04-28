@@ -14,7 +14,7 @@ Towify`s development kit,contain request, storage and data etc.
 - ArrayUtils：数组相关
 - StringUtils：字符串相关
 - CommonUtil：零散工具类
-- md5
+- Md5：MD5 加密
 - object.util
 - performance
 - value_checker
@@ -480,7 +480,35 @@ CommonUtil.repeat(12, (index) => {
 
 
 
-### md5
+### 9.Md5
+
+MD5 加密工具类
+
+
+
+**Md5 中的方法**
+
+| 方法         | 说明                                   |
+| ------------ | -------------------------------------- |
+| hashStr      | 对普通字符串进行 MD5 加密              |
+| hashAsciiStr | 对还有 ASCII 字符的字符串进行 MD5 加密 |
+
+
+
+**使用示例**
+
+```
+// 导入 Md5
+import { Md5 } from 'soid-data';
+
+// 对普通字符串 Md5 加密
+Md5.hashStr('普通字符')
+
+// 对含有 ASCII 字符的字符串进行加密
+Md5.hashAsciiStr('\u666e\u901a\u5b57\u7b26')
+```
+
+
 
 ### object.util
 
