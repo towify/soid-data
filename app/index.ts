@@ -4,13 +4,14 @@
  */
 
 export * from './storage/database';
-export * from './manager/request_manager';
 export * from './storage/shared_preference';
-export * from './util/common';
-export * from './util/md5';
-export * from './util/value_checker';
+export * from './manager/request_manager';
 export * from './manager/delta_manager';
-export * from './util/performance';
+export * from './service/event_observer';
 export * from './util/array.util';
 export * from './util/object.util';
-export * from './service/event_observer';
+export * from './util/string.util';
+export * from './util/value_checker';
+export * from './util/performance';
+export * from './util/common';
+export * from './util/md5';
