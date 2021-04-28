@@ -28,7 +28,7 @@ export const CommonUtil = {
    * @param {string} content
    */
   pickNumber: (content: string): number | undefined => {
-    const result = content.replace(/[^0-9]/gi, '');
+    const result = content.replace(/[^0-9]/ig, '');
     return result ? parseInt(result) : undefined;
   },
   /**
