@@ -42,4 +42,13 @@ describe('soid-data', () => {
     expect(count === 4);
   });
 
+  it('performance-delay',()=> {
+
+    let count = 0;
+    Performance.delay(200).then(() => {
+      count = 1;
+    });
+
+    expect(count === 1);
+  });
 });
