@@ -5,9 +5,9 @@
 
 export class Md5 {
   /**
-   * @description: 对普通字符串进行 MD5 加密， One time hashing functions
-   * @param {string} str
-   * @param {boolean} raw
+   * @description 对普通字符串进行 MD5 加密， One time hashing functions
+   * @param str
+   * @param raw
    */
   public static hashStr(str: string, raw: boolean = false) {
     return this.onePassHasher
@@ -17,9 +17,9 @@ export class Md5 {
   }
 
   /**
-   * @description: 对 ASCII 字符串进行 MD5 加密
-   * @param {string} str
-   * @param {boolean} raw
+   * @description 对 ASCII 字符串进行 MD5 加密
+   * @param str
+   * @param raw
    */
   public static hashAsciiStr(str: string, raw: boolean = false) {
     return this.onePassHasher

@@ -33,13 +33,12 @@ export type RequestResult = {
 
 export class RequestManager {
   /**
-   * @description: 发起网络请求
-   * @param {string} method 请求方法, "get" | "post" | "put" | "delete",
-   * @param {string} url 请求地址
-   * @param {any} queryParams 请求参数
-   * @param {any} body 请求题
-   * @param { RequestOptions } options 请求配置
-   * @return {Promise<RequestResult>}
+   * @description 发起网络请求
+   * @param method 请求方法, "get" | "post" | "put" | "delete",
+   * @param url 请求地址
+   * @param queryParams 请求参数
+   * @param body 请求题
+   * @param options 请求配置
    */
   public static request(
     method: "get" | "post" | "put" | "delete",
@@ -88,9 +87,8 @@ export class RequestManager {
   }
 
   /**
-   * @description: 拼接参数
-   * @param {any} params
-   * @return {string}
+   * @description 拼接参数
+   * @param params
    */
   private static queryParams(params: any = {}): string {
     return Object.keys(params)
@@ -99,10 +97,9 @@ export class RequestManager {
   }
 
   /**
-   * @description: 拼接 url 地址
-   * @param {string} url 请求地址
-   * @param {any} params 请求参数
-   * @return {*}
+   * @description 拼接 url 地址
+   * @param url 请求地址
+   * @param params 请求参数
    */
   private static withQuery(url: string, params: any = {}) {
     const queryString = this.queryParams(params);
@@ -112,9 +109,8 @@ export class RequestManager {
   }
 
   /**
-   * @description: 解析请求结果
-   * @param {XMLHttpRequest} xhr
-   * @return {*}
+   * @description 解析请求结果
+   * @param xhr
    */
   private static parseXHRResult(xhr: XMLHttpRequest): RequestResult {
     return {
@@ -128,7 +124,7 @@ export class RequestManager {
   }
 
   /**
-   * @description:拼接错误
+   * @description 拼接错误
    * @param xhr
    * @param message
    */
