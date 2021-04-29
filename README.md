@@ -17,7 +17,7 @@ Towify`s development kit,contain request, storage and data etc.
 - Md5：MD5 加密
 - ObjectUtils：Object 相关
 - performance
-- value_checker
+- ValueChecker：格式校验
 
 ## Install
 
@@ -541,7 +541,38 @@ ObjectUtils.isObject([1, 2])
 
 ### performance
 
-### value_checker
+### 12.ValueChecker
+
+格式校验
+
+
+
+**ValueChecker 中的方法**
+
+| 方法             | 描述                                               |
+| ---------------- | -------------------------------------------------- |
+| isHexColor       | 是否是十六进制形式的颜色值                         |
+| isRGBAColor      | 是否是 RGBA 形式的颜色值                           |
+| isEmail          | 是否是邮箱地址                                     |
+| isPhoneNumber    | 是否是手机号码（中国）                             |
+| isValidPassword  | 是否是合法的密码，(?=.*[0-9])(?=.*[a-zA-Z]).{8,30} |
+| isIdentification | 是否是中国身份证号码                               |
+| IsChineseId      | 是否是中国身份证号码                               |
+| isURL            | 是否是 url 地址                                    |
+| isImage          | 是否是图片                                         |
+| isValidSMSCode   | 是否是 SMS 码                                      |
+
+
+
+**使用示例**
+
+```
+// 导入 ValueChecker
+import { ValueChecker } from 'soid-data';
+
+ValueChecker.isHexColor('#FFB6C1')
+ValueChecker.isEmail('towify@.google.com')
+```
 
 
 

@@ -28,7 +28,6 @@ export class ValueChecker {
     return reg.test(value);
   }
 
-  // Chinese Phone Number
   /**
    * @description 是否是手机号码（中国）
    */
