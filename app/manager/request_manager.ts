@@ -129,8 +129,8 @@ export class RequestManager {
 
   /**
    * @description:拼接错误
-   * @param {*}
-   * @return {*}
+   * @param xhr
+   * @param message
    */
   private static errorResponse(
     xhr: XMLHttpRequest,
