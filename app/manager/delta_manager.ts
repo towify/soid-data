@@ -35,16 +35,28 @@ export class DeltaEventManager {
     };
   }
 
+  /**
+   * @description: 设置时间阈值
+   * @param {number} value 阈值，单位 ms
+   */
   setDeltaTime(value: number) {
     this.#delta = value;
     return this;
   }
 
+  /**
+   * @description: 设置回调方法
+   * @param {function} event
+   */
   setEvent(event: (...args: any[]) => void) {
     this.#event = event;
     return this;
   }
 
+  /**
+   * @description: 开始观察
+   * @param {array} args
+   */
   getWatcher(...args: any[]): void {
     return this.#watcher(...args);
   }

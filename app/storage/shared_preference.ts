@@ -15,11 +15,20 @@ class SharedPreference {
 
   private constructor() {}
 
+  /**
+   * @description: 删除键值对
+   * @param {string} key 键
+   */
   public async delete(key: string) {
     this.redis.delete(key);
     await localStorage.removeItem(key);
   }
 
+  /**
+   * @description: 获取指定键对应的值
+   * @param {string} key 键值
+   * @return {*}
+   */
   public get(key: string) {
     let redisValue = this.redis.get(key);
     if (!redisValue) {
@@ -28,6 +37,11 @@ class SharedPreference {
     return redisValue;
   }
 
+  /**
+   * @description: 保存键值对，如果已经存在则进行更新
+   * @param {string} key 键
+   * @param {string} value 值
+   */
   public async save(key: string, value: string) {
     this.redis.set(key, value);
     return localStorage.setItem(key, value);
