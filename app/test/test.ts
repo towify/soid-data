@@ -12,19 +12,21 @@ describe('soid-data', () => {
     expect(Shared.get('some_data') === 'some data');
   });
 
-  it('checker-HexColor', () => {
+});
+
+describe('checker',()=> {
+  it('HexColor', () => {
     let isHexColor = ValueChecker.isHexColor('#FFB6C1');
     expect(isHexColor === true);
   });
 
-  it('check-RGBAColor', () => {
+  it('RGBAColor', () => {
     let isRFBAColor = ValueChecker.isRGBAColor('rgb(12,33,41)')
     expect(isRFBAColor === true)
   });
 
-  it('check-email',()=> {
+  it('email',()=> {
     let isEmail = ValueChecker.isEmail('towify@.google.com');
     expect(isEmail === true)
   });
-
-});
+})
