@@ -14,7 +14,7 @@ export class EventObserverService {
   }
 
   /**
-   * @description: 获取单利对象
+   * @description 获取单利对象
    */
   static getInstance(): EventObserverService {
     EventObserverService.instance ??= new EventObserverService();
@@ -22,11 +22,10 @@ export class EventObserverService {
   }
 
   /**
-   * @description: 注册监听事件
-   * @param {string} name 主标识
-   * @param {string} key  子标识
-   * @param {function} event 事件回调
-   * @return {*}
+   * @description 注册监听事件
+   * @param name 主标识
+   * @param key  子标识
+   * @param event 事件回调
    */
   public register<T>(
     name: string,
@@ -39,9 +38,8 @@ export class EventObserverService {
   }
 
   /**
-   * @description: 移除主标识对应的所有回调
-   * @param {string} name 主标识
-   * @return {*}
+   * @description 移除主标识对应的所有回调
+   * @param name 主标识
    */
   public unregister(name: string): boolean {
     if (this.#events[name]?.length) {
@@ -53,10 +51,9 @@ export class EventObserverService {
   }
 
   /**
-   * @description: 发送消息
-   * @param {string} name 主标识
-   * @param {any} message 消息
-   * @return {*}
+   * @description 发送消息
+   * @param name 主标识
+   * @param message 消息
    */
   public notify(name: string, message?: any) {
     this.#events[name] &&

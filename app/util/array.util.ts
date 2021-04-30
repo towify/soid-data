@@ -5,8 +5,8 @@
 
 export class ArrayUtils {
   /**
-   * @description: 将二维数组降为一维数组
-   * @param {U} array
+   * @description 将二维数组降为一维数组
+   * @param array
    */
   static flat<U>(array: U[][]): U[] {
     if (((array as unknown) as U[]).every((value) => !Array.isArray(value))) {

@@ -16,7 +16,7 @@ Towify`s development kit,contain request, storage and data etc.
 - CommonUtil：零散工具类
 - Md5：MD5 加密
 - ObjectUtils：Object 相关
-- performance
+- Performance：方法调用相关
 - ValueChecker：格式校验
 
 ## Install
@@ -539,7 +539,57 @@ ObjectUtils.isObject([1, 2])
 
 
 
-### performance
+### 11.Performance
+
+方法调用相关操作，如防抖动操作、延迟调用和间隔调用
+
+
+
+**Performance 中的方法**
+
+| 方法     | 描述     |
+| -------- | -------- |
+| debounce | 防抖动   |
+| delay    | 延迟调用 |
+| throttle | 间隔调用 |
+
+
+
+**使用示例**
+
+```
+// 导入 Performance
+import { Performance } from 'soid-data';
+
+// 防抖动,运行后 count = 2
+let count = 0;
+const debounceFunction = Performance.debounce(() => {
+	count += 1;
+}, 200);
+setTimeout(debounceFunction, 0);
+setTimeout(debounceFunction, 100);
+setTimeout(debounceFunction, 300);
+
+// 间隔调用，没 200ms 执行一次方法，一共执行4次
+let count = 0;
+const throttleFunction = Performance.throttle(() => {
+	count += 1;
+}, 200);
+throttleFunction()
+throttleFunction()
+throttleFunction()
+throttleFunction()
+
+// 延迟调用,200ms 后修改 count 的值
+let count = 0;
+Performance.delay(200).then(() => {
+	count = 1;
+});
+```
+
+
+
+
 
 ### 12.ValueChecker
 
