@@ -12,7 +12,10 @@ describe('soid-data', () => {
     expect(Shared.get('some_data') === 'some data');
   });
 
-  it('performance-debounce', () => {
+});
+
+describe('performance',()=>{
+  it('debounce', () => {
     let count = 0;
     const debounceFunction = Performance.debounce(() => {
       count += 1;
@@ -26,7 +29,7 @@ describe('soid-data', () => {
     expect(count).toEqual(2);
   });
 
-  it('performance-throttle', () => {
+  it('throttle', () => {
     let count = 0;
     const throttleFunction = Performance.throttle(() => {
       count += 1;
@@ -42,7 +45,7 @@ describe('soid-data', () => {
     expect(count === 4);
   });
 
-  it('performance-delay',()=> {
+  it('delay',()=> {
 
     let count = 0;
     Performance.delay(200).then(() => {
@@ -51,4 +54,4 @@ describe('soid-data', () => {
 
     expect(count === 1);
   });
-});
+})
