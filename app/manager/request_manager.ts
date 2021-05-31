@@ -31,7 +31,7 @@ export type RequestResult = {
   headers: string;
 };
 
-export class RequestManager {
+export class RequestHelper {
   /**
    * @description 发起网络请求
    * @param method 请求方法, "get" | "post" | "put" | "delete",

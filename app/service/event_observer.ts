@@ -57,8 +57,8 @@ export class EventObserverService {
    */
   public notify(name: string, message?: any) {
     this.#events[name] &&
-      Object.values(this.#events[name]).forEach((event) => {
-        event(message);
-      });
+    Object.values(this.#events[name]).forEach((event) => {
+      event(message);
+    });
   }
 }
