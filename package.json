@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "publish": "node npm-publish-cli.js",
     "tsc": "tsc --build --force",
     "build": "webpack",
     "lint": "tslint -c tslint.json -p tsconfig.json",
@@ -29,7 +30,8 @@
     "babel-loader": "^8.2.2",
     "ts-loader": "^9.0.2",
     "ts-jest": "26.5.5",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "latest-version": "^5.1.0"
   },
   "version": "0.0.49"
 }

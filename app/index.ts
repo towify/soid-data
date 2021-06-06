@@ -5,7 +5,7 @@
 
 export * from './storage/database';
 export * from './storage/shared_preference';
-export * from './manager/request_manager';
+export * from './manager/request_helper';
 export * from './manager/delta_manager';
 export * from './service/event_observer';
 export * from './util/array.util';
