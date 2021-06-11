@@ -5,6 +5,15 @@
 
 export type Merge<T> = { [K in keyof T]: T[K] };
 
+export type ChangeTypeOfKeys<T extends object,
+  Keys extends keyof T,
+  NewType> = {
+  // Loop to every key. We gonna check if the key
+  // is assignable to Keys. If yes, change the type.
+  // Else, retain the type.
+  [key in keyof T]: key extends Keys ? NewType : T[key]
+}
+
 export const CommonUtil = {
   /**
    * @description 查找字符串中所有符合 [A-Z][a-z]+|[0-9]+ 正则的字符
@@ -34,6 +43,7 @@ export const CommonUtil = {
   /**
    * @description 循环调用
    * @param count 循环次数
+   * @param hold
    */
   repeat: (count: number, hold: (index: number) => void) => {
     for (let index = 0; index < count; index += 1) {
