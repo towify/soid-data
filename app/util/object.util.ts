@@ -10,4 +10,16 @@ export class ObjectUtils {
   static isObject(item: any) {
     return item && typeof item === 'object' && !Array.isArray(item);
   }
+
+  static deepSet(object: { [key: string]: any }, keyPaths: string | string[], value: any): { [key: string]: any } {
+    if (typeof keyPaths == 'string')
+      return ObjectUtils.deepSet(object, keyPaths.split('.'), value);
+    else if (keyPaths.length == 1 && value !== undefined) {
+      object[keyPaths[0]] = value;
+      return object;
+    } else if (keyPaths.length == 0)
+      return object;
+    else
+      return ObjectUtils.deepSet(object[keyPaths[0]], keyPaths.slice(1), value);
+  }
 }
