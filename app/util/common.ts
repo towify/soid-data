@@ -5,6 +5,8 @@
 
 export type Merge<T> = { [K in keyof T]: T[K] };
 
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
 export type ChangeTypeOfKeys<T extends object,
   Keys extends keyof T,
   NewType> = {
