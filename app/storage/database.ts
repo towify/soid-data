@@ -3,7 +3,7 @@
  * @date 2019/10/8
  */
 
-import Dexie, {IndexableType} from 'dexie';
+import Dexie, { IndexableType } from 'dexie';
 import Collection = Dexie.Collection;
 
 export enum Order {
@@ -112,29 +112,30 @@ export abstract class Database extends Dexie {
         const offset = index * limit;
         const table = this.table(params.table);
         let collection: Collection<any, any> | undefined;
+        if (params.sort) {
+          collection = table.orderBy(params.sort.key);
+          if (params.sort.order === Order.Desc) {
+            collection = collection.reverse();
+          }
+        }
         if (params.query) {
-          collection = table.where(params.query);
+          if (!collection) {
+            collection = table.toCollection();
+          }
+          collection = collection.filter((data) => {
+            for (const key of Object.keys(params.query!)) {
+              if (data[key] !== params.query![key]) {
+                return false;
+              }
+            }
+            return true;
+          });
         }
         if (offset >= 0 && limit > 0) {
           if (!collection) {
             collection = table.toCollection();
           }
           collection = collection.offset(offset).limit(limit);
-        }
-        if (params.sort) {
-          if (!collection) {
-            collection = table.toCollection();
-          }
-          if (params.sort.order === Order.Desc) {
-            collection = collection.reverse();
-          }
-          collection
-            .sortBy(params.sort.key)
-            .then((result: { [key: string]: IndexableType }[]) =>
-              resolve(result)
-            )
-            .catch(reject);
-          return;
         }
         if (!collection) {
           collection = table.toCollection();
