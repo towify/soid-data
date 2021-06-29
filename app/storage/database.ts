@@ -3,7 +3,7 @@
  * @date 2019/10/8
  */
 
-import Dexie, {IndexableType} from 'dexie';
+import Dexie, { IndexableType } from 'dexie';
 import Collection = Dexie.Collection;
 
 export enum Order {
