@@ -15,6 +15,4 @@ export * from './util/value_checker';
 export * from './util/performance';
 export * from './util/common';
 export * from './util/md5';
-export * from './base/base.model';
-export * from './util/common.type';
 export * from './model/phone.model';
