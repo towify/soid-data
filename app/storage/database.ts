@@ -18,8 +18,18 @@ export abstract class Database extends Dexie {
   // 表名及字段的定义
   public abstract readonly tableDefined: { [key: string]: string };
 
-  protected constructor(value: string) {
-    super(value);
+  protected constructor(value: string, extra?: {
+    indexedDB: any,
+    IDBKeyRange: any,
+  }) {
+    if (extra) {
+      super(value, {
+        indexedDB: extra.indexedDB,
+        IDBKeyRange: extra.IDBKeyRange
+      });
+    } else {
+      super(value);
+    }
   }
 
   /**
