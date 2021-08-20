@@ -70,11 +70,11 @@ export class RequestHelper {
       };
 
       xhr.onerror = (evt) => {
-        resolve(this.errorResponse(xhr, "Failed to make request."));
+        resolve(this.errorResponse(xhr, "Failed to make request.", -1));
       };
 
       xhr.ontimeout = (evt) => {
-        resolve(this.errorResponse(xhr, "Request took longer than expected."));
+        resolve(this.errorResponse(xhr, "Request took longer than expected.", -2));
       };
 
       if (body && (method === "post" || method === "put")) {
@@ -130,11 +130,12 @@ export class RequestHelper {
    */
   private static errorResponse(
     xhr: XMLHttpRequest,
-    message: string | null = null
+    message: string | null = null,
+    status = 0
   ): RequestResult {
     return {
       ok: false,
-      status: xhr.status,
+      status: status,
       statusText: xhr.statusText,
       headers: xhr.getAllResponseHeaders(),
       data: message || xhr.statusText,
