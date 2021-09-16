@@ -3,7 +3,7 @@
  * @date 2021/9/16
  */
 export class DateUtil {
-  formatByType(isoString: string, format: 'MM/DD/YY' | 'DD/MM/YY' | 'YY/MM/DD' | 'M/D/YY' | 'YY/M/D') {
+  static formatByType(isoString: string, format: 'MM/DD/YY' | 'DD/MM/YY' | 'YY/MM/DD' | 'M/D/YY' | 'YY/M/D') {
     const date = new Date(isoString);
     const month = date.getMonth();
     const day = date.getDate();
