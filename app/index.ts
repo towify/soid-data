@@ -10,6 +10,7 @@ export * from './manager/delta_manager';
 export * from './service/event_observer';
 export * from './util/array.util';
 export * from './util/object.util';
+export * from './util/date.util';
 export * from './util/string.util';
 export * from './util/value_checker';
 export * from './util/performance';
