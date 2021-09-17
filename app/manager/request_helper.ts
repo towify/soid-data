@@ -90,7 +90,7 @@ export class RequestHelper {
    * @description 拼接参数
    * @param params
    */
-  private static queryParams(params: any = {}): string {
+  public static queryParams(params: any = {}): string {
     return Object.keys(params)
       .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
       .join("&");
