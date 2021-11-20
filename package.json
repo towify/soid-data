@@ -15,7 +15,7 @@
   },
   "bundleDependencies": false,
   "peerDependencies": {
-    "dexie": "^3.0.3"
+    "dexie": "^3.2.0"
   },
   "peerDependenciesMeta": {
     "dexie": {
@@ -23,7 +23,7 @@
     }
   },
   "optionalDependencies": {
-    "dexie": "^3.0.3"
+    "dexie": "^3.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
@@ -38,7 +38,7 @@
     "babel-loader": "^8.2.2",
     "ts-loader": "^9.0.2",
     "ts-jest": "26.5.5",
-    "typescript": "^4.2.4",
+    "typescript": "^4.4.4",
     "latest-version": "^5.1.0"
   },
   "version": "0.0.72"
