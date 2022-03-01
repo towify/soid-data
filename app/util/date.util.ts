@@ -6,54 +6,38 @@ export class DateUtil {
 
   static formatByType(
     isoString: string,
-    format: 'YYYY/MM/DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YY/M/D' | 'M/D/YY' | 'D/M/YY' | 'Month D, Yr' | 'D Month, Yr' | 'Yr, Month D',
+    format: string,
     language?: 'zh-CN' | 'en'
   ) {
     const date = new Date(isoString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const dd = day > 9 ? day : ('0' + day);
-    switch (format) {
-      case 'YYYY/MM/DD': {
-        return `${ year }/${ DateUtil.formatMonth(month, 'MM', language) }/${ dd }`;
-      }
-      case 'DD/MM/YYYY': {
-        return `${ dd }/${ DateUtil.formatMonth(month, 'MM', language) }/${ year }`;
-      }
-      case 'MM/DD/YYYY': {
-        return `${ DateUtil.formatMonth(month, 'MM', language) }/${ dd }/${ year }`;
-      }
-      case 'YY/M/D': {
-        return `${ year }/${ DateUtil.formatMonth(month, 'M', language) }/${ day }`;
-      }
-      case 'M/D/YY': {
-        return `${ day }/${ DateUtil.formatMonth(month, 'M', language) }/${ year }`;
-      }
-      case 'D/M/YY': {
-        return `${ day }/${ DateUtil.formatMonth(month, 'M', language) }/${ year }`;
-      }
-      case 'Month D, Yr': {
-        return `${ DateUtil.formatMonth(month, 'Month', language) } ${ day }, ${ year }`;
-      }
-      case 'D Month, Yr': {
-        return `${ day } ${ DateUtil.formatMonth(month, 'Month', language) }, ${ year }`;
-      }
-      case 'Yr, Month D': {
-        return `${ year } ${ DateUtil.formatMonth(month, 'Month', language) }, ${ day }`;
-      }
-      default:
-        return `${ year }/${ DateUtil.formatMonth(month, 'MM', language) }/${ dd }`;
+    const times: {[key: string] : number | string} = {
+      'm+|M+': date.getMonth() + 1,
+      'D+|d+': date.getDay(),
+      'h+': date.getHours(),
+      'm+': date.getMinutes(),
+      's+': date.getSeconds(),
+      'q+': Math.floor((date.getMonth() + 3) / 3),
+      'S+': date.getMilliseconds()
     }
+    let dateString = format;
+    if (/(Y+|y+)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`.substring(4 - RegExp.$1.length))
+    }
+    if (/(Month)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Month', language)}`)
+    }
+    if (/(Mon)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Mon', language)}`)
+    }
+    Object.entries(times).forEach(([key, value]) => {
+      if (new RegExp(`(${ key })`).test(dateString)) {
+        dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${value}` : `00${value}`.substring(`${value}`.length))
+      }
+    })
+    return dateString;
   }
 
-  static formatMonth(month: number, format: 'M' | 'MM' | 'Mon' | 'Month', language?: 'zh-CN' | 'en'): number | string {
-    if (format === 'M') {
-      return month
-    }
-    if (format === 'MM') {
-      return month > 9 ? month : ('0' + month);
-    }
+  static formatMonth(month: number, format: 'Mon' | 'Month', language?: 'zh-CN' | 'en'): number | string {
     switch (month) {
       case 1:
         if (language === 'en') {
