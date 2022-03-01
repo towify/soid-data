@@ -12,7 +12,7 @@ export class DateUtil {
     const date = new Date(isoString);
     const times: {[key: string] : number | string} = {
       'm+|M+': date.getMonth() + 1,
-      'D+|d+': date.getDay(),
+      'D+|d+': date.getDate(),
       'h+': date.getHours(),
       'm+': date.getMinutes(),
       's+': date.getSeconds(),
