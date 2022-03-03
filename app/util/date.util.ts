@@ -4,36 +4,40 @@
  */
 export class DateUtil {
 
-  static formatByType(
+  static formatDate(
     isoString: string,
     format: string,
     language?: 'zh-CN' | 'en'
   ) {
     const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
     const times: {[key: string] : number | string} = {
-      'm+|M+': date.getMonth() + 1,
       'D+|d+': date.getDate(),
-      'h+': date.getHours(),
-      'm+': date.getMinutes(),
-      's+': date.getSeconds(),
+      'hh': date.getHours(),
+      'mm': date.getMinutes(),
+      'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
       'S+': date.getMilliseconds()
     }
     let dateString = format;
-    if (/(Y+|y+)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`.substring(4 - RegExp.$1.length))
-    }
-    if (/(Month)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Month', language)}`)
-    }
-    if (/(Mon)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Mon', language)}`)
-    }
     Object.entries(times).forEach(([key, value]) => {
       if (new RegExp(`(${ key })`).test(dateString)) {
         dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${value}` : `00${value}`.substring(`${value}`.length))
       }
     })
+    if (/(Yr)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`)
+    } else if (/(Y+|y+)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`.substring(4 - RegExp.$1.length))
+    }
+    if (/(Month)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Month', language)}`)
+    } else if (/(Mon)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(date.getMonth(), 'Mon', language)}`)
+    } else if (/(M+)/.test(dateString)){
+      const month = date.getMonth() + 1
+      dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${month}` : `00${month}`.substring(`${month}`.length))
+    }
     return dateString;
   }
 
