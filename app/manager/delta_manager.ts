@@ -3,11 +3,6 @@
  * @date 2020/10/6 15:19
  */
 
-/*
- * @author kaysaith
- * @date 2020/4/24 19:00
- */
-
 export class DeltaEventManager {
   #resizeTime: number | undefined;
   #timeout: boolean = false;
