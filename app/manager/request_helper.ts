@@ -99,7 +99,7 @@ export class RequestHelper {
           return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
       })
-      .filter(item => item.length === 0)
+      .filter(item => item.length !== 0)
       .join('&');
   }
 
