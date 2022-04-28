@@ -90,10 +90,17 @@ export class RequestHelper {
    * @description 拼接参数
    * @param params
    */
-  public static queryParams(params: any = {}): string {
+  public static queryParams(params: { [key: string]: any } = {}): string {
     return Object.keys(params)
-      .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
-      .join("&");
+      .map((key) => {
+        if (params[key] === undefined) {
+          return '';
+        } else {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }
+      })
+      .filter(item => item.length === 0)
+      .join('&');
   }
 
   /**
