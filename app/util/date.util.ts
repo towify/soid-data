@@ -5,14 +5,14 @@
 export class DateUtil {
 
   static formatDate(
-    isoString: string,
+    isoString: string | Date | number,
     format: string,
   ) {
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) return isoString;
+    if (isNaN(date.getTime())) return `${isoString}`;
     const times: {[key: string] : number | string} = {
-      'D+|d+': date.getDate(),
-      'hh': date.getHours(),
+      'D+|d+': date.getUTCDate(),
+      'hh': date.getUTCHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
