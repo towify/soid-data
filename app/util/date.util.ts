@@ -11,8 +11,8 @@ export class DateUtil {
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return `${isoString}`;
     const times: {[key: string] : number | string} = {
-      'D+|d+': date.getUTCDate(),
-      'hh': date.getUTCHours(),
+      'D+|d+': date.getDate(),
+      'hh': typeof isoString === 'number' ? date.getUTCHours() : date.getHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
