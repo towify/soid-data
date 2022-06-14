@@ -12,7 +12,7 @@ export class DateUtil {
     if (isNaN(date.getTime())) return `${isoString}`;
     const times: {[key: string] : number | string} = {
       'D+|d+': date.getDate(),
-      'hh': typeof isoString === 'number' || (typeof isoString === 'string' && !isoString.includes(':')) ? date.getUTCHours() : date.getHours(),
+      'hh': date.getUTCHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
