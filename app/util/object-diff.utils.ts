@@ -5,31 +5,31 @@
 
 import { ObjectUtils } from "./object.util";
 
-export class DslDiffUtils {
-  static getDslDiffInfo(params: {
+export class ObjectDiffUtils {
+  static getObjectDiffInfoList(params: {
     id: string;
-    originDsl: { [key: string]: any };
-    newDsl: { [key: string]: any };
+    originObject: { [key: string | number]: any };
+    newObject: { [key: string | number]: any };
     rootPath?: string;
   }): {
     id: string;
     path: string;
-    oldValue?: string | number | boolean | { [key: string]: any };
-    newValue?: string | number | boolean | { [key: string]: any };
+    oldValue?: string | number | boolean | [] | { [key: string | number] : any };
+    newValue?: string | number | boolean | [] | { [key: string | number] : any }
   }[] {
-    const diff = DslDiffUtils.getDslDiffMapping(params.originDsl, params.newDsl);
+    const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
     const result: {
       id: string;
       path: string;
-      oldValue?: string | number | boolean | { [key: string]: any };
-      newValue?: string | number | boolean | { [key: string]: any };
+      oldValue?: string | number | boolean | [] | { [key: string | number] : any };
+      newValue?: string | number | boolean | [] | { [key: string | number] : any }
     }[] = [];
     Object.keys(diff).forEach(path => {
       result.push({
         id: params.id,
         path,
-        oldValue: DslDiffUtils.getDslValueByPath(params.originDsl, path),
-        newValue: DslDiffUtils.getDslValueByPath(params.newDsl, path)
+        oldValue: ObjectDiffUtils.getObjectValueByPath(params.originObject, path),
+        newValue: ObjectDiffUtils.getObjectValueByPath(params.newObject, path)
       });
     });
     if (params.rootPath) {
@@ -40,9 +40,9 @@ export class DslDiffUtils {
     return result;
   }
 
-  static getDslDiffMapping(originDsl: { [key: string]: any }, newDsl: { [key: string]: any }) {
-    const originMapping = DslDiffUtils.flattenJSON(originDsl);
-    const updateMapping = DslDiffUtils.flattenJSON(newDsl);
+  static getObjectDiffMapping(originObject: { [key: string | number]: any }, newObject: { [key: string | number]: any }) {
+    const originMapping = ObjectDiffUtils.flattenObject(originObject);
+    const updateMapping = ObjectDiffUtils.flattenObject(newObject);
     const diffMapping: { [key: string]: any } = {};
     Object.keys(updateMapping).forEach(key => {
       if (
@@ -59,10 +59,10 @@ export class DslDiffUtils {
     return diffMapping;
   }
 
-  static getDslValueByPath(json: { [key: string]: any }, valuePath: string) {
+  static getObjectValueByPath(json: { [key: string]: any }, valuePath: string) {
     const keys = valuePath.split('.');
     let node = json;
-    let value: string | number | boolean | { [key: string]: any } | undefined;
+    let value: string | number | boolean | [] | { [key: string | number] : any } | undefined;
     keys.forEach((key, keyIndex) => {
       if (!node) {
         value = undefined;
@@ -77,7 +77,7 @@ export class DslDiffUtils {
     return value;
   }
 
-  static flattenJSON(json: { [key: string]: any }): {
+  static flattenObject(json: { [key: string | number]: any }): {
     [key: string]: number | string | boolean | [] | {};
   } {
     const result: { [key: string]: number | string | boolean | [] | {} } = {};
@@ -104,8 +104,8 @@ export class DslDiffUtils {
     return result;
   }
 
-  static unFlattenToJSON(data: { [key: string]: number | string | boolean | [] | {} }): {
-    [key: string]: any;
+  static unFlattenToObject(data: { [key: string]: number | string | boolean | [] | {} }): {
+    [key: string | number]: any;
   } {
     const result: { [key: string]: any } = {};
     let node: any;

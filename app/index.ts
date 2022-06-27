@@ -18,4 +18,4 @@ export * from './util/common';
 export * from './util/md5';
 export * from './model/phone.model';
 export * from './util/nanoid.utils';
-export * from './util/dsl-diff.utils'
+export * from './util/object-diff.utils'
