@@ -40,6 +40,26 @@ export class ObjectDiffUtils {
     return result;
   }
 
+  static getNewObjectByObjectDiffInfoList(
+    originObject: { [key: string | number]: any },
+    diffInfo: {
+      path: string,
+      newValue?: string | number | boolean | [] | { [key: string | number] : any }
+    }[]
+  ): {
+    [key: string | number]: any;
+  } {
+    const originMapping = ObjectDiffUtils.flattenObject(originObject);
+    diffInfo.forEach(item => {
+      if (item.newValue !== undefined) {
+        originMapping[item.path] = item.newValue;
+      } else if (originMapping[item.path]) {
+        delete originMapping[item.path]
+      }
+    })
+    return ObjectDiffUtils.unFlattenToObject(originMapping);
+  }
+
   static getObjectDiffMapping(originObject: { [key: string | number]: any }, newObject: { [key: string | number]: any }) {
     const originMapping = ObjectDiffUtils.flattenObject(originObject);
     const updateMapping = ObjectDiffUtils.flattenObject(newObject);
@@ -109,16 +129,16 @@ export class ObjectDiffUtils {
   } {
     const result: { [key: string]: any } = {};
     let node: any;
-    let nodeKeys;
+    let nodeKeys: string[];
     let keysLength = 0;
     Object.keys(data).forEach(path => {
       node = result;
       nodeKeys = path.split('.');
       keysLength = nodeKeys.length;
       nodeKeys.forEach((key, index) => {
-        if (index < keysLength) {
+        if (index < keysLength - 1) {
           if (node[key] === undefined) {
-            node[key] = !Number.isNaN(parseInt(key, 10)) ? [] : {};
+            node[key] = !Number.isNaN(parseInt(nodeKeys[index+1], 10)) ? [] : {};
           }
           node = node[key];
         } else {
