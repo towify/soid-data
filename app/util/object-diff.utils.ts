@@ -79,9 +79,9 @@ export class ObjectDiffUtils {
     return diffMapping;
   }
 
-  static getObjectValueByPath(json: { [key: string]: any }, valuePath: string) {
+  static getObjectValueByPath(object: { [key: string]: any }, valuePath: string) {
     const keys = valuePath.split('.');
-    let node = json;
+    let node = object;
     let value: string | number | boolean | [] | { [key: string | number] : any } | undefined;
     keys.forEach((key, keyIndex) => {
       if (!node) {
@@ -95,6 +95,43 @@ export class ObjectDiffUtils {
       }
     });
     return value;
+  }
+
+  static setObjectValueByPath(params: {
+    object: { [key: string]: any };
+    valuePath: string;
+    value?: string | number | boolean | [] | { [key: string | number] : any }
+  }) {
+    let node = params.object;
+    let parentNode: { [key: string]: any } | undefined;
+    const keys = params.valuePath.split('.');
+    keys.forEach((key, keyIndex) => {
+      if (!node) {
+        return;
+      }
+      if (keyIndex < keys.length - 1) {
+        parentNode = node;
+        if (node[key] === undefined) {
+          node[key] = !Number.isNaN(parseInt(keys[keyIndex+1], 10)) ? [] : {};
+        }
+        node = node[key];
+      } else {
+        if (params.value !== undefined) {
+          node[key] = params.value;
+        } else if (node[key]) {
+          if (Array.isArray(node) && !Number.isNaN(parseInt(key, 10))) {
+            node.splice(parseInt(key, 10), 1);
+          } else {
+            delete node[key];
+          }
+          if (Array.isArray(node) && node.length === 0 || Object.keys(node).length === 0) {
+            if (parentNode) {
+              delete parentNode[keys[keyIndex - 1]];
+            }
+          }
+        }
+      }
+    });
   }
 
   static flattenObject(json: { [key: string | number]: any }): {
