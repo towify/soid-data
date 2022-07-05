@@ -22,4 +22,13 @@ export class ArrayUtils {
       []
     );
   }
+
+  static groupBy<T extends any>(key: string, array: T[]): T[][] {
+    let object: any = {};
+    array.forEach(item => {
+      object[(item as any)[key]] ??= [];
+      object[(item as any)[key]].push(item)
+    })
+    return Object.values(object);
+  }
 }

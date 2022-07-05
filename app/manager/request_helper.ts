@@ -55,16 +55,17 @@ export class RequestHelper {
       xhr.open(method, this.withQuery(url, queryParams));
       if (headers) {
         Object.keys(headers).forEach((key) =>
-          xhr.setRequestHeader(key, headers[key])
+          xhr.setRequestHeader(key, headers[key]),
         );
       }
 
       if (ignoreCache) {
         xhr.setRequestHeader("Cache-Control", "no-cache");
       }
-
+      // 允许跨域
+      xhr.setRequestHeader( 'Access-Control-Allow-Origin', '*');
+      xhr.withCredentials = false;
       xhr.timeout = timeout;
-
       xhr.onload = (evt) => {
         resolve(this.parseXHRResult(xhr));
       };

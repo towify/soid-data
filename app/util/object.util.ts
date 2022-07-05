@@ -23,7 +23,7 @@ export class ObjectUtils {
       return ObjectUtils.deepSet(object[keyPaths[0]], keyPaths.slice(1), value);
   }
 
-  static getDeepValueByPath(source: {[key: string]: any}, keyPath: string[]) {
+  static deepGet(source: {[key: string]: any}, keyPath: string[]) {
     const clonedPath = [...keyPath];
     let result = source;
     if (!source[clonedPath[0]]) clonedPath.splice(0, 1);
