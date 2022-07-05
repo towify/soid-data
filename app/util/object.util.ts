@@ -25,7 +25,7 @@ export class ObjectUtils {
 
   static deepGet(source: { [key: string]: any }, keyPath: string[]) {
     const clonedPath = [...keyPath];
-    let result = source;
+    let result: any = source;
     if (!source[clonedPath[0]]) clonedPath.splice(0, 1);
     while (clonedPath.length > 0) {
       result = result[clonedPath[0]];
