@@ -12,7 +12,7 @@ export * from './util/array.util';
 export * from './util/object.util';
 export * from './util/date.util';
 export * from './util/string.util';
-export * from './util/value_checker';
+export * from './util/value.checker';
 export * from './util/performance';
 export * from './util/common';
 export * from './util/md5';

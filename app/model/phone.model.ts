@@ -3,7 +3,7 @@
  * @date 2021/7/21
  */
 
-import { ValueChecker } from '../util/value_checker';
+import { ValueChecker } from '../util/value.checker';
 
 export class PhoneModel {
   constructor(private readonly number: string) {
