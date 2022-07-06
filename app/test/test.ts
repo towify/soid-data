@@ -5,7 +5,7 @@
 
 import {Shared} from "../storage/shared_preference";
 import {Performance} from "../util/performance";
-import {ValueChecker} from "../util/value_checker";
+import {ValueChecker} from "../util/value.checker";
 
 describe('soid-data', () => {
   it('getSharedPreference', async () => {
