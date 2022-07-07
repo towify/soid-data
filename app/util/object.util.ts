@@ -28,7 +28,7 @@ export class ObjectUtils {
     let result: any = source;
     if (!source[clonedPath[0]]) {
       clonedPath.splice(0, 1);
-      return undefined;
+      if (!clonedPath.length) return undefined;
     }
     while (clonedPath.length > 0) {
       result = result[clonedPath[0]];
