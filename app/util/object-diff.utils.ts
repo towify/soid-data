@@ -23,7 +23,7 @@ export class ObjectDiffUtils {
       oldValue?: string | number | boolean | [] | { [key: string | number] : any };
       newValue?: string | number | boolean | [] | { [key: string | number] : any }
     }[] = [];
-    if (!params.originObject || !params.newObject) {
+    if (params.originObject === undefined || params.newObject === undefined) {
       result.push({
         id: params.id,
         path: params.rootPath ?? '',
@@ -75,7 +75,7 @@ export class ObjectDiffUtils {
       ) {
         return;
       }
-      if (!originMapping[key]) {
+      if (originMapping[key] === undefined) {
         const newKeys = key.split('.');
         let newPath = '';
         let newIndex = 0;
@@ -83,14 +83,14 @@ export class ObjectDiffUtils {
         let updateNode: { [key: string | number]: any } | undefined;
         newKeys.forEach((newKey, keyIndex) => {
           if (keyIndex === newKeys.length - 1) {
-            if (updateNode) {
+            if (updateNode !== undefined) {
               updateNode[newKey] = updateMapping[key];
             } else {
               diffMapping[key] = updateMapping[key];
             }
             return;
           }
-          if (originNode[newKey] && newIndex === 0) {
+          if (originNode[newKey] !== undefined && newIndex === 0) {
             originNode = originNode[newKey];
             newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
           } else {
@@ -116,7 +116,7 @@ export class ObjectDiffUtils {
     let node = object;
     let value: string | number | boolean | [] | { [key: string | number] : any } | undefined;
     keys.forEach((key, keyIndex) => {
-      if (!node) {
+      if (node === undefined) {
         value = undefined;
         return;
       }
@@ -138,7 +138,7 @@ export class ObjectDiffUtils {
     let parentNode: { [key: string]: any } | undefined;
     const keys = params.valuePath.split('.');
     keys.forEach((key, keyIndex) => {
-      if (!node) {
+      if (node === undefined) {
         return;
       }
       if (keyIndex < keys.length - 1) {
