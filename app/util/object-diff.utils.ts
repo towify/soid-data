@@ -8,8 +8,8 @@ import { ObjectUtils } from "./object.util";
 export class ObjectDiffUtils {
   static getObjectDiffInfoList(params: {
     id: string;
-    originObject: { [key: string | number]: any };
-    newObject: { [key: string | number]: any };
+    originObject?: { [key: string | number]: any };
+    newObject?: { [key: string | number]: any };
     rootPath?: string;
   }): {
     id: string;
@@ -17,26 +17,30 @@ export class ObjectDiffUtils {
     oldValue?: string | number | boolean | [] | { [key: string | number] : any };
     newValue?: string | number | boolean | [] | { [key: string | number] : any }
   }[] {
-    const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
     const result: {
       id: string;
       path: string;
       oldValue?: string | number | boolean | [] | { [key: string | number] : any };
       newValue?: string | number | boolean | [] | { [key: string | number] : any }
     }[] = [];
+    if (params.originObject === undefined || params.newObject === undefined) {
+      result.push({
+        id: params.id,
+        path: params.rootPath ?? '',
+        oldValue: params.originObject,
+        newValue: params.newObject
+      });
+      return result;
+    }
+    const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
     Object.keys(diff).forEach(path => {
       result.push({
         id: params.id,
-        path,
-        oldValue: ObjectDiffUtils.getObjectValueByPath(params.originObject, path),
-        newValue: ObjectDiffUtils.getObjectValueByPath(params.newObject, path)
+        path: params.rootPath ? `${params.rootPath}.${path}` : path,
+        oldValue: ObjectDiffUtils.getObjectValueByPath(params.originObject!, path),
+        newValue: ObjectDiffUtils.getObjectValueByPath(params.newObject!, path)
       });
     });
-    if (params.rootPath) {
-      result.forEach(item => {
-        item.path = `${params.rootPath}.${item.path}`;
-      });
-    }
     return result;
   }
 
@@ -49,15 +53,14 @@ export class ObjectDiffUtils {
   ): {
     [key: string | number]: any;
   } {
-    const originMapping = ObjectDiffUtils.flattenObject(originObject);
     diffInfo.forEach(item => {
-      if (item.newValue !== undefined) {
-        originMapping[item.path] = item.newValue;
-      } else if (originMapping[item.path]) {
-        delete originMapping[item.path]
-      }
+      ObjectDiffUtils.setObjectValueByPath({
+        object: originObject,
+        valuePath: item.path,
+        value: item.newValue
+      })
     })
-    return ObjectDiffUtils.unFlattenToObject(originMapping);
+    return originObject;
   }
 
   static getObjectDiffMapping(originObject: { [key: string | number]: any }, newObject: { [key: string | number]: any }) {
@@ -72,7 +75,36 @@ export class ObjectDiffUtils {
       ) {
         return;
       }
-      if (originMapping[key] === undefined || originMapping[key] !== updateMapping[key]) {
+      if (originMapping[key] === undefined) {
+        const newKeys = key.split('.');
+        let newPath = '';
+        let newIndex = 0;
+        let originNode = originObject;
+        let updateNode: { [key: string | number]: any } | undefined;
+        newKeys.forEach((newKey, keyIndex) => {
+          if (keyIndex === newKeys.length - 1) {
+            if (updateNode !== undefined) {
+              updateNode[newKey] = updateMapping[key];
+            } else {
+              diffMapping[key] = updateMapping[key];
+            }
+            return;
+          }
+          if (originNode[newKey] !== undefined && newIndex === 0) {
+            originNode = originNode[newKey];
+            newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
+          } else {
+            if (newIndex === 0) {
+              diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
+              updateNode = diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`]
+            } else if (updateNode) {
+              updateNode[newKey] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
+              updateNode = updateNode[newKey];
+            }
+            newIndex += 1;
+          }
+        })
+      } else if (originMapping[key] !== updateMapping[key]) {
         diffMapping[key] = updateMapping[key];
       }
     });
@@ -84,7 +116,7 @@ export class ObjectDiffUtils {
     let node = object;
     let value: string | number | boolean | [] | { [key: string | number] : any } | undefined;
     keys.forEach((key, keyIndex) => {
-      if (!node) {
+      if (node === undefined) {
         value = undefined;
         return;
       }
@@ -106,7 +138,7 @@ export class ObjectDiffUtils {
     let parentNode: { [key: string]: any } | undefined;
     const keys = params.valuePath.split('.');
     keys.forEach((key, keyIndex) => {
-      if (!node) {
+      if (node === undefined) {
         return;
       }
       if (keyIndex < keys.length - 1) {
@@ -123,11 +155,6 @@ export class ObjectDiffUtils {
             node.splice(parseInt(key, 10), 1);
           } else {
             delete node[key];
-          }
-          if (Array.isArray(node) && node.length === 0 || Object.keys(node).length === 0) {
-            if (parentNode) {
-              delete parentNode[keys[keyIndex - 1]];
-            }
           }
         }
       }
