@@ -4,7 +4,7 @@
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-
+  "type": "module",
   "scripts": {
     "publish": "node npm-publish-cli.js",
     "tsc": "tsc --build --force",
