@@ -34,15 +34,31 @@ export class ObjectDiffUtils {
       return result;
     }
     const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
+    let newValue;
     Object.keys(diff).forEach(path => {
+      newValue = ObjectDiffUtils.getObjectValueByPath(params.newObject!, path)
       result.push({
         id: params.id,
         path: params.rootPath ? `${params.rootPath}.${path}` : path,
-        oldValue: ObjectDiffUtils.getObjectValueByPath(params.originObject!, path),
-        newValue: ObjectDiffUtils.getObjectValueByPath(params.newObject!, path)
+        oldValue: ObjectDiffUtils.getObjectValueByPath(params.originObject!, path) ?? ObjectDiffUtils.getDefaultValue(newValue),
+        newValue
       });
     });
     return result;
+  }
+
+  static getDefaultValue(referValue: any) {
+    if (referValue === undefined || ObjectUtils.isObject(referValue) || Array.isArray(referValue)) return undefined;
+    switch (typeof referValue){
+      case "string":
+        return '';
+      case "boolean":
+        return false;
+      case "number":
+        return 0;
+      default:
+        return undefined;
+    }
   }
 
   static getNewObjectByObjectDiffInfoList(
