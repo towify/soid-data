@@ -25,12 +25,14 @@ export class ObjectDiffUtils {
       newValue?: string | number | boolean | [] | { [key: string | number] : any }
     }[] = [];
     if (params.originObject === undefined || params.newObject === undefined) {
-      result.push({
-        id: params.id,
-        path: params.rootPath ?? '',
-        oldValue: params.originObject,
-        newValue: params.newObject
-      });
+      if (params.originObject !== params.newObject) {
+        result.push({
+          id: params.id,
+          path: params.rootPath ?? '',
+          oldValue: params.originObject,
+          newValue: params.newObject
+        });
+      }
       return result;
     }
     const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
