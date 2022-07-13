@@ -86,6 +86,16 @@ export class ObjectDiffUtils {
     const originMapping = ObjectDiffUtils.flattenObject(originObject);
     const updateMapping = ObjectDiffUtils.flattenObject(newObject);
     const diffMapping: { [key: string]: any } = {};
+    Object.keys(originMapping).forEach(key => {
+      if (updateMapping[key] === undefined) {
+        ObjectDiffUtils.setObjectUnsetDiff({
+          path: key,
+          unsetValueObject: newObject,
+          valueMapping: originMapping,
+          diffMapping: diffMapping
+        })
+      }
+    })
     Object.keys(updateMapping).forEach(key => {
       if (
         originMapping[key] === updateMapping[key] ||
@@ -95,39 +105,53 @@ export class ObjectDiffUtils {
         return;
       }
       if (originMapping[key] === undefined) {
-        const newKeys = key.split('.');
-        let newPath = '';
-        let newIndex = 0;
-        let originNode = originObject;
-        let updateNode: { [key: string | number]: any } | undefined;
-        newKeys.forEach((newKey, keyIndex) => {
-          if (keyIndex === newKeys.length - 1) {
-            if (updateNode !== undefined) {
-              updateNode[newKey] = updateMapping[key];
-            } else {
-              diffMapping[key] = updateMapping[key];
-            }
-            return;
-          }
-          if (originNode[newKey] !== undefined && newIndex === 0) {
-            originNode = originNode[newKey];
-            newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
-          } else {
-            if (newIndex === 0) {
-              diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
-              updateNode = diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`]
-            } else if (updateNode) {
-              updateNode[newKey] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
-              updateNode = updateNode[newKey];
-            }
-            newIndex += 1;
-          }
+        ObjectDiffUtils.setObjectUnsetDiff({
+          path: key,
+          unsetValueObject: originObject,
+          valueMapping: updateMapping,
+          diffMapping: diffMapping
         })
       } else if (originMapping[key] !== updateMapping[key]) {
         diffMapping[key] = updateMapping[key];
       }
     });
     return diffMapping;
+  }
+
+  static setObjectUnsetDiff(params: {
+    path: string,
+    unsetValueObject: { [key: string | number]: any },
+    valueMapping: { [key: string]: any },
+    diffMapping: { [key: string]: any }
+  }) {
+    const newKeys = params.path.split('.');
+    let newPath = '';
+    let newIndex = 0;
+    let originNode = params.unsetValueObject;
+    let updateNode: { [key: string | number]: any } | undefined;
+    newKeys.forEach((newKey, keyIndex) => {
+      if (keyIndex === newKeys.length - 1) {
+        if (updateNode !== undefined) {
+          updateNode[newKey] = params.valueMapping[params.path];
+        } else {
+          params.diffMapping[params.path] = params.valueMapping[params.path];
+        }
+        return;
+      }
+      if (originNode[newKey] !== undefined && newIndex === 0) {
+        originNode = originNode[newKey];
+        newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
+      } else {
+        if (newIndex === 0) {
+          params.diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
+          updateNode = params.diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`]
+        } else if (updateNode) {
+          updateNode[newKey] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
+          updateNode = updateNode[newKey];
+        }
+        newIndex += 1;
+      }
+    })
   }
 
   static getObjectValueByPath(object: { [key: string]: any }, valuePath: string) {
