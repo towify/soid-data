@@ -113,6 +113,15 @@ export class ObjectDiffUtils {
         })
       } else if (originMapping[key] !== updateMapping[key]) {
         diffMapping[key] = updateMapping[key];
+        if (Object.keys(diffMapping).some(diffKey => diffKey !== key && key.includes(key))) {
+          delete diffMapping[key];
+        } else {
+          Object.keys(diffMapping).forEach(diffKey => {
+            if (diffKey !== key && diffKey.includes(key)) {
+              delete diffMapping[diffKey];
+            }
+          })
+        }
       }
     });
     return diffMapping;
@@ -129,11 +138,14 @@ export class ObjectDiffUtils {
     let newIndex = 0;
     let originNode = params.unsetValueObject;
     let updateNode: { [key: string | number]: any } | undefined;
+    let finallyPath = '';
     newKeys.forEach((newKey, keyIndex) => {
       if (keyIndex === newKeys.length - 1) {
         if (updateNode !== undefined) {
+          finallyPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
           updateNode[newKey] = params.valueMapping[params.path];
         } else {
+          finallyPath = params.path;
           params.diffMapping[params.path] = params.valueMapping[params.path];
         }
         return;
@@ -142,8 +154,9 @@ export class ObjectDiffUtils {
         originNode = originNode[newKey];
         newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
       } else {
+        newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`
         if (newIndex === 0) {
-          params.diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
+          params.diffMapping[newPath] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
           updateNode = params.diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`]
         } else if (updateNode) {
           updateNode[newKey] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
@@ -152,6 +165,15 @@ export class ObjectDiffUtils {
         newIndex += 1;
       }
     })
+    if (Object.keys(params.diffMapping).some(key => key !== finallyPath && finallyPath.includes(key))) {
+      delete params.diffMapping[finallyPath];
+    } else {
+      Object.keys(params.diffMapping).forEach(key => {
+        if (key !== finallyPath && key.includes(finallyPath)) {
+          delete params.diffMapping[key];
+        }
+      })
+    }
   }
 
   static getObjectValueByPath(object: { [key: string]: any }, valuePath: string) {
@@ -181,7 +203,7 @@ export class ObjectDiffUtils {
     let parentNode: { [key: string]: any } | undefined;
     const keys = params.valuePath.split('.');
     keys.forEach((key, keyIndex) => {
-      if (node === undefined) {
+      if (node === undefined || node === null) {
         return;
       }
       if (keyIndex < keys.length - 1) {
@@ -191,7 +213,7 @@ export class ObjectDiffUtils {
         }
         node = node[key];
       } else {
-        if (params.value !== undefined) {
+        if (params.value !== undefined && params.value !== null) {
           node[key] = params.value;
         } else if (node[key]) {
           if (Array.isArray(node) && !Number.isNaN(parseInt(key, 10))) {
