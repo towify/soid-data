@@ -85,7 +85,7 @@ export class ObjectDiffUtils {
   static getObjectDiffMapping(originObject: { [key: string | number]: any }, newObject: { [key: string | number]: any }) {
     const originMapping = ObjectDiffUtils.flattenObject(originObject);
     const updateMapping = ObjectDiffUtils.flattenObject(newObject);
-    const diffMapping: { [key: string]: any } = {};
+    const diffMapping: { [key: string]: boolean } = {};
     Object.keys(originMapping).forEach(key => {
       if (updateMapping[key] === undefined) {
         ObjectDiffUtils.setObjectUnsetDiff({
@@ -112,10 +112,8 @@ export class ObjectDiffUtils {
           diffMapping: diffMapping
         })
       } else if (originMapping[key] !== updateMapping[key]) {
-        diffMapping[key] = updateMapping[key];
-        if (Object.keys(diffMapping).some(diffKey => diffKey !== key && key.includes(key))) {
-          delete diffMapping[key];
-        } else {
+        if (!Object.keys(diffMapping).some(diffKey => diffKey !== key && key.includes(diffKey))) {
+          diffMapping[key] = true;
           Object.keys(diffMapping).forEach(diffKey => {
             if (diffKey !== key && diffKey.includes(key)) {
               delete diffMapping[diffKey];
@@ -131,49 +129,36 @@ export class ObjectDiffUtils {
     path: string,
     unsetValueObject: { [key: string | number]: any },
     valueMapping: { [key: string]: any },
-    diffMapping: { [key: string]: any }
+    diffMapping: { [key: string]: boolean }
   }) {
+    if (Object.keys(params.diffMapping).some(key => key !== params.path && params.path.includes(key))) {
+      return;
+    }
     const newKeys = params.path.split('.');
     let newPath = '';
-    let newIndex = 0;
     let originNode = params.unsetValueObject;
-    let updateNode: { [key: string | number]: any } | undefined;
     let finallyPath = '';
     newKeys.forEach((newKey, keyIndex) => {
       if (keyIndex === newKeys.length - 1) {
-        if (updateNode !== undefined) {
-          finallyPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
-          updateNode[newKey] = params.valueMapping[params.path];
-        } else {
+        if (!finallyPath) {
           finallyPath = params.path;
-          params.diffMapping[params.path] = params.valueMapping[params.path];
         }
+        params.diffMapping[finallyPath] = true;
         return;
       }
-      if (originNode[newKey] !== undefined && newIndex === 0) {
+      if (finallyPath) return;
+      if (originNode[newKey] !== undefined) {
         originNode = originNode[newKey];
         newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`;
       } else {
-        newPath = newPath ? `${newPath}.${newKey}` : `${newKey}`
-        if (newIndex === 0) {
-          params.diffMapping[newPath] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
-          updateNode = params.diffMapping[newPath ? `${newPath}.${newKey}` : `${newKey}`]
-        } else if (updateNode) {
-          updateNode[newKey] ??= !Number.isNaN(parseInt(newKeys[keyIndex+1], 10)) ? [] : {};
-          updateNode = updateNode[newKey];
-        }
-        newIndex += 1;
+        finallyPath = newPath ? `${newPath}.${newKey}` : `${newKey}`
       }
     })
-    if (Object.keys(params.diffMapping).some(key => key !== finallyPath && finallyPath.includes(key))) {
-      delete params.diffMapping[finallyPath];
-    } else {
-      Object.keys(params.diffMapping).forEach(key => {
-        if (key !== finallyPath && key.includes(finallyPath)) {
-          delete params.diffMapping[key];
-        }
-      })
-    }
+    Object.keys(params.diffMapping).forEach(key => {
+      if (key !== finallyPath && key.includes(finallyPath)) {
+        delete params.diffMapping[key];
+      }
+    })
   }
 
   static getObjectValueByPath(object: { [key: string]: any }, valuePath: string) {
