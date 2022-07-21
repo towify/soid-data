@@ -69,8 +69,6 @@ export class ObjectUtils {
           }
           deepSource[deepPath[0]] = `${ deepValue }`;
         } else if (typeof deepSource[deepPath[0]] === 'number') {
-          // todo
-        } else if (typeof deepSource[deepPath[0]] === 'string') {
           isDifferent = deepSource[deepPath[0]] !== parseFloat(deepValue);
           const formatted = parseFloat(deepValue);
           if (Number.isNaN(formatted)) {
