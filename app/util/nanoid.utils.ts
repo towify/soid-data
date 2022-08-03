@@ -9,7 +9,6 @@ export class NanoIdHelper {
   static short() {
     return customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 16)();
   }
-
   static custom(size?: number) {
     return nanoid(size);
   }
