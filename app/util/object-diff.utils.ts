@@ -7,6 +7,9 @@ import { ObjectUtils } from "./object.util";
 
 export class ObjectDiffUtils {
 
+  /**
+   * 获取 originObject 和 newObject 以 rootPath (eg: a.b.c.d) 会根目录下， value 不同的 path 值
+   * **/
   static getObjectDiffInfoList(params: {
     id: string;
     originObject?: { [key: string | number]: any };
@@ -35,9 +38,10 @@ export class ObjectDiffUtils {
       }
       return result;
     }
-    const diff = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
+    // 获取 originObject 与 newObject 不同的值的 mapping。 path(eg: a.b.c.d) 为 key， value 为值。 非递归处理
+    const diffMapping = ObjectDiffUtils.getObjectDiffMapping(params.originObject, params.newObject);
     let newValue;
-    Object.keys(diff).forEach(path => {
+    Object.keys(diffMapping).forEach(path => {
       newValue = ObjectDiffUtils.getObjectValueByPath(params.newObject!, path)
       result.push({
         id: params.id,
@@ -49,6 +53,9 @@ export class ObjectDiffUtils {
     return result;
   }
 
+  /*
+  * 根据传入的 referValue 类型，返回对应的默认值。
+  * */
   static getDefaultValue(referValue: any) {
     if (referValue === undefined || ObjectUtils.isObject(referValue) || Array.isArray(referValue)) return undefined;
     switch (typeof referValue){
@@ -63,16 +70,19 @@ export class ObjectDiffUtils {
     }
   }
 
+  /**
+   * 按照 diff list 将修改的值设置到原本的 object 中。 非递归循环
+   * */
   static getNewObjectByObjectDiffInfoList(
     originObject: { [key: string | number]: any },
-    diffInfo: {
+    diffList: {
       path: string,
       newValue?: string | number | boolean | [] | { [key: string | number] : any }
     }[]
   ): {
     [key: string | number]: any;
   } {
-    diffInfo.forEach(item => {
+    diffList.forEach(item => {
       ObjectDiffUtils.setObjectValueByPath({
         object: originObject,
         valuePath: item.path,
@@ -82,6 +92,10 @@ export class ObjectDiffUtils {
     return originObject;
   }
 
+  /**
+   * 将 key - value 的 origin object 和 new object 打平处理成 path(a.b.c.d) 为 key ，value 为值的 mapping。 这一步为递归处理
+   * 同时比较两个 mapping 中 value 不同的 path 并组装成一个新的 mapping。 非递归处理
+   * **/
   static getObjectDiffMapping(originObject: { [key: string | number]: any }, newObject: { [key: string | number]: any }) {
     const originMapping = ObjectDiffUtils.flattenObject(originObject);
     const updateMapping = ObjectDiffUtils.flattenObject(newObject);
@@ -125,6 +139,13 @@ export class ObjectDiffUtils {
     return diffMapping;
   }
 
+  /**
+   * 更具 path(eg: a.b.c.d)，并没有在 unsetValueObject 获取值 (undefined)
+   * 同时确定 path 的 parent node path 是存在 unsetValueObject 中
+   * 通过循环 path 路径查找到 在 unsetValueObject 中存在的 parent node path 以及其对应的值
+   * 并替换到 diffMapping 中 path
+   * 非递归处理
+   * **/
   static setObjectUnsetDiff(params: {
     path: string,
     unsetValueObject: { [key: string | number]: any },
@@ -161,6 +182,9 @@ export class ObjectDiffUtils {
     })
   }
 
+  /**
+   * 按照 value path(eg: a.b.c.d)， 获取 object 中原本的值， 非递归处理
+   */
   static getObjectValueByPath(object: { [key: string]: any }, valuePath: string) {
     const keys = valuePath.split('.');
     let node = object;
@@ -179,6 +203,9 @@ export class ObjectDiffUtils {
     return value;
   }
 
+  /**
+   * 按照 value path(eg: a.b.c.d)， 将 object 中的值进行更新。 非递归。
+   **/
   static setObjectValueByPath(params: {
     object: { [key: string]: any };
     valuePath: string;
@@ -211,6 +238,9 @@ export class ObjectDiffUtils {
     });
   }
 
+  /**
+   * 将 key - value 的 object 打平处理，变成 path(eg: a.b.c.d) 为 key， value 为值的 mapping。 递归处理
+   * */
   static flattenObject(json: { [key: string | number]: any }): {
     [key: string]: number | string | boolean | [] | {};
   } {
@@ -238,6 +268,9 @@ export class ObjectDiffUtils {
     return result;
   }
 
+  /**
+   * 将 path(eg: a.b.c.d) 为 key， value 为值的 mapping，组装成 key - value 的 object。 非递归
+   * **/
   static unFlattenToObject(data: { [key: string]: number | string | boolean | [] | {} }): {
     [key: string | number]: any;
   } {
