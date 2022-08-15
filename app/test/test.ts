@@ -3,16 +3,21 @@
  * @date 12/17/20 10:44
  */
 
-import {Shared} from "../storage/shared_preference";
-import {Performance} from "../util/performance";
-import {ValueChecker} from "../util/value_checker";
+import { Shared } from '../storage/shared_preference';
+import { Performance } from '../util/performance';
+import { ValueChecker } from '../util/value.checker';
+import { NanoIdHelper } from '../util/nanoid.utils';
 
 describe('soid-data', () => {
   it('getSharedPreference', async () => {
     await Shared.save('some_data', 'some data');
     expect(Shared.get('some_data') === 'some data');
   });
-
+  it('nanoid', () => {
+    const shortId = NanoIdHelper.short();
+    console.log(shortId, 'short id');
+    expect(shortId.length === 16);
+  });
 });
 
 describe('performance',()=>{

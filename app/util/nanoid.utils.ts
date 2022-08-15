@@ -3,13 +3,12 @@
  * @date 2022/4/8
  */
 
-import { nanoid } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 
 export class NanoIdHelper {
   static short() {
-    return nanoid(16);
+    return customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 16)();
   }
-
   static custom(size?: number) {
     return nanoid(size);
   }
