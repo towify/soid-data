@@ -3,7 +3,6 @@
  *  @Date 11/8/20
  */
 
-export * from './storage/database';
 export * from './storage/shared_preference';
 export * from './manager/request_helper';
 export * from './manager/delta_manager';

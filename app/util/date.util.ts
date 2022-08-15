@@ -83,6 +83,30 @@ export class DateUtil {
     }
     return month;
   }
+
+  static yesterday(): Date {
+    const previous = new Date();
+    previous.setDate(previous.getDate() - 1);
+    previous.setHours(0, 0, 0, 0);
+    return previous;
+  }
+
+  static tomorrow(): Date {
+    const previous = new Date();
+    previous.setDate(previous.getDate() + 1);
+    previous.setHours(0, 0, 0, 0);
+    return previous;
+  }
+
+  static addOne(date: Date) {
+    date.setDate(date.getDate() + 1);
+    return date;
+  }
+
+  static toStartTime(date: Date) {
+    date.setHours(0,0,0,0);
+    return date;
+  }
 }
 
 
