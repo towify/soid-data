@@ -34,57 +34,61 @@ export class ObjectUtils {
   }
 
   /**
-   * 如果设置的 Path 深度没有结束，其中某个节点为 undefined 的话那么会生成一个 空的 Object
+   * @param params.onDifferent
+   * 捕获深度设置置的时候，新值与旧置不同的时候的时机
+   * @attention
+   * 如果设置的 Path 深度没有结束，其中某个节点为 undefined 的话那么会生成一个
+   * 空的 Object
    * */
   static deepOptionalSet(params: {
     path: string[];
     source: any;
     value: any;
-    onBindDifferentValue?: () => void;
+    onDifferent?: () => void;
   }): void {
-    const setDeepValueFunction = (deepPath: string[], deepSource: any, deepValue: any) => {
-      if (deepPath.length && deepPath.length === 1 && deepSource[deepPath[0]] === undefined) {
-        deepSource[deepPath[0]] = deepValue;
-        params.onBindDifferentValue && params.onBindDifferentValue();
+    const setDeepValue = (path: string[], source: any, value: any) => {
+      if (path.length && path.length === 1 && source[path[0]] === undefined) {
+        source[path[0]] = value;
+        params.onDifferent && params.onDifferent();
         return;
       }
-      if (deepPath.length > 1) {
-        if (!deepSource[deepPath[0]]) {
-          deepSource[deepPath[0]] = {};
+      if (path.length > 1) {
+        if (!source[path[0]]) {
+          source[path[0]] = {};
         }
-        setDeepValueFunction(
-          deepPath.slice(1, deepPath.length),
-          deepSource[deepPath[0]],
-          deepValue
+        setDeepValue(
+          path.slice(1, path.length),
+          source[path[0]],
+          value
         );
-      } else if (deepPath.length) {
+      } else if (path.length) {
         let isDifferent = false;
-        if (typeof deepSource[deepPath[0]] === typeof deepValue) {
-          isDifferent = deepSource[deepPath[0]] !== deepValue;
-          deepSource[deepPath[0]] = deepValue;
-          if (isDifferent) params.onBindDifferentValue && params.onBindDifferentValue();
-        } else if (typeof deepSource[deepPath[0]] === 'string') {
-          if (deepSource[deepPath[0]] !== `${ deepValue }`) {
-            params.onBindDifferentValue && params.onBindDifferentValue();
+        if (typeof source[path[0]] === typeof value) {
+          isDifferent = source[path[0]] !== value;
+          source[path[0]] = value;
+          if (isDifferent) params.onDifferent && params.onDifferent();
+        } else if (typeof source[path[0]] === 'string') {
+          if (source[path[0]] !== `${ value }`) {
+            params.onDifferent && params.onDifferent();
           }
-          deepSource[deepPath[0]] = `${ deepValue }`;
-        } else if (typeof deepSource[deepPath[0]] === 'number') {
-          isDifferent = deepSource[deepPath[0]] !== parseFloat(deepValue);
-          const formatted = parseFloat(deepValue);
+          source[path[0]] = `${ value }`;
+        } else if (typeof source[path[0]] === 'number') {
+          isDifferent = source[path[0]] !== parseFloat(value);
+          const formatted = parseFloat(value);
           if (Number.isNaN(formatted)) {
             console.error(
-              `Towify: Invalid Deep Value Source, it should be number but it is ${ deepValue }`
+              `Towify: Invalid Deep Value Source, it should be number but it is ${ value }`
             );
           }
-          deepSource[deepPath[0]] = formatted;
-          if (isDifferent) params.onBindDifferentValue && params.onBindDifferentValue();
-        } else if (typeof deepSource[deepPath[0]] === 'boolean') {
-          isDifferent = deepSource[deepPath[0]] !== (deepValue === 'true');
-          deepSource[deepPath[0]] = deepValue === 'true';
-          if (isDifferent) params.onBindDifferentValue && params.onBindDifferentValue();
+          source[path[0]] = formatted;
+          if (isDifferent) params.onDifferent && params.onDifferent();
+        } else if (typeof source[path[0]] === 'boolean') {
+          isDifferent = source[path[0]] !== (value === 'true');
+          source[path[0]] = value === 'true';
+          if (isDifferent) params.onDifferent && params.onDifferent();
         }
       }
     };
-    setDeepValueFunction(params.path, params.source, params.value);
+    setDeepValue(params.path, params.source, params.value);
   }
 }

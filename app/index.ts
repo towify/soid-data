@@ -3,10 +3,10 @@
  *  @Date 11/8/20
  */
 
-export * from './storage/shared_preference';
-export * from './manager/request_helper';
-export * from './manager/delta_manager';
-export * from './service/event_observer';
+export * from './storage/shared-preference';
+export * from './manager/request.helper';
+export * from './manager/delta.manager';
+export * from './service/event.observer';
 export * from './util/array.util';
 export * from './util/object.util';
 export * from './util/date.util';

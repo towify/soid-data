@@ -3,7 +3,7 @@
  * @date 12/17/20 10:44
  */
 
-import { Shared } from '../storage/shared_preference';
+import { Shared } from '../storage/shared-preference';
 import { Performance } from '../util/performance';
 import { ValueChecker } from '../util/value.checker';
 import { NanoIdHelper } from '../util/nanoid.utils';

@@ -9,33 +9,33 @@ export class DateUtil {
     format: string,
   ) {
     const date = new Date(isoString);
-    if (isNaN(date.getTime())) return `${isoString}`;
-    const times: {[key: string] : number | string} = {
+    if (isNaN(date.getTime())) return `${ isoString }`;
+    const times: { [key: string]: number | string } = {
       'D+|d+': date.getDate(),
       'hh': date.getUTCHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
       'S+': date.getMilliseconds()
-    }
+    };
     let dateString = format;
     Object.entries(times).forEach(([key, value]) => {
       if (new RegExp(`(${ key })`).test(dateString)) {
-        dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${value}` : `00${value}`.substring(`${value}`.length))
+        dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${ value }` : `00${ value }`.substring(`${ value }`.length));
       }
-    })
+    });
     if (/(Yr)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`)
+      dateString = dateString.replace(RegExp.$1, `${ date.getFullYear() }`);
     } else if (/(Y+|y+)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${date.getFullYear()}`.substring(4 - RegExp.$1.length))
+      dateString = dateString.replace(RegExp.$1, `${ date.getFullYear() }`.substring(4 - RegExp.$1.length));
     }
-    const month = date.getMonth() + 1
+    const month = date.getMonth() + 1;
     if (/(Month)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(month, 'Month')}`)
+      dateString = dateString.replace(RegExp.$1, `${ DateUtil.formatMonth(month, 'Month') }`);
     } else if (/(Mon)/.test(dateString)) {
-      dateString = dateString.replace(RegExp.$1, `${DateUtil.formatMonth(month, 'Mon')}`)
-    } else if (/(M+)/.test(dateString)){
-      dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${month}` : `00${month}`.substring(`${month}`.length))
+      dateString = dateString.replace(RegExp.$1, `${ DateUtil.formatMonth(month, 'Mon') }`);
+    } else if (/(M+)/.test(dateString)) {
+      dateString = dateString.replace(RegExp.$1, RegExp.$1.length === 1 ? `${ month }` : `00${ month }`.substring(`${ month }`.length));
     }
     return dateString;
   }
@@ -44,40 +44,40 @@ export class DateUtil {
     switch (month) {
       case 1:
         if (format === 'Mon') return 'Jan';
-        return 'January'
+        return 'January';
       case 2:
         if (format === 'Mon') return 'Feb';
-        return 'February'
+        return 'February';
       case 3:
         if (format === 'Mon') return 'Mar';
-        return 'March'
+        return 'March';
       case 4:
         if (format === 'Mon') return 'Apr';
-        return 'April'
+        return 'April';
       case 5:
         if (format === 'Mon') return 'May';
-        return 'May'
+        return 'May';
       case 6:
         if (format === 'Mon') return 'Jun';
-        return 'June'
+        return 'June';
       case 7:
         if (format === 'Mon') return 'Jul';
-        return 'July'
+        return 'July';
       case 8:
         if (format === 'Mon') return 'Aug';
-        return 'August'
+        return 'August';
       case 9:
         if (format === 'Mon') return 'Sept';
-        return 'September'
+        return 'September';
       case 10:
         if (format === 'Mon') return 'Oct';
-        return 'October'
+        return 'October';
       case 11:
         if (format === 'Mon') return 'Nov';
-        return 'November'
+        return 'November';
       case 12:
         if (format === 'Mon') return 'Dec';
-        return 'December'
+        return 'December';
       default:
         break;
     }
@@ -104,7 +104,7 @@ export class DateUtil {
   }
 
   static toStartTime(date: Date) {
-    date.setHours(0,0,0,0);
+    date.setHours(0, 0, 0, 0);
     return date;
   }
 }
