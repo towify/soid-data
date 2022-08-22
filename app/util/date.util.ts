@@ -10,6 +10,7 @@ export class DateUtil {
   ) {
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return `${ isoString }`;
+    if (format === 'weekday') return DateUtil.formatWeekDay(date.getDay());
     const times: { [key: string]: number | string } = {
       'D+|d+': date.getDate(),
       'hh': date.getUTCHours(),
