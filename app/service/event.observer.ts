@@ -42,7 +42,7 @@ export class EventObserverService {
    * @param name 主标识
    */
   public unregister(name: string): boolean {
-    if (this.#events[name]?.length) {
+    if (this.#events[name] && Object.keys(this.#events[name])?.length) {
       this.#events[name] = {};
       delete this.#events[name];
       return true;
