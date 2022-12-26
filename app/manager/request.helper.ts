@@ -16,7 +16,7 @@ export type RequestOptions = {
 export const DefaultRequestOption = {
   ignoreCache: false,
   headers: {
-    Accept: "application/json, text/javascript, text/plain",
+    Accept: 'application/json, text/javascript, text/plain',
   },
   // default max duration for a request
   timeout: 30000,
@@ -41,7 +41,7 @@ export class RequestHelper {
    * @param options 请求配置
    */
   public static request(
-    method: "get" | "post" | "put" | "delete",
+    method: 'get' | 'post' | 'put' | 'delete',
     url: string,
     queryParams: any = {},
     body: any = null,
@@ -60,10 +60,10 @@ export class RequestHelper {
       }
 
       if (ignoreCache) {
-        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.setRequestHeader('Cache-Control', 'no-cache');
       }
       // 允许跨域
-      xhr.setRequestHeader( 'Access-Control-Allow-Origin', '*');
+      xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhr.withCredentials = false;
       xhr.timeout = timeout;
       xhr.onload = (evt) => {
@@ -71,15 +71,15 @@ export class RequestHelper {
       };
 
       xhr.onerror = (evt) => {
-        resolve(this.errorResponse(xhr, "Failed to make request.", -1));
+        resolve(this.errorResponse(xhr, 'Failed to make request.', -1));
       };
 
       xhr.ontimeout = (evt) => {
-        resolve(this.errorResponse(xhr, "Request took longer than expected.", -2));
+        resolve(this.errorResponse(xhr, 'Request took longer than expected.', -2));
       };
 
-      if (body && (method === "post" || method === "put")) {
-        xhr.setRequestHeader("Content-Type", "application/json");
+      if (body && (method === 'post' || method === 'put')) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(body));
       } else {
         xhr.send();
@@ -97,7 +97,11 @@ export class RequestHelper {
         if (params[key] === undefined) {
           return '';
         } else {
-          return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+          let param = params[key];
+          if (typeof param === 'object') {
+            param = JSON.stringify(param);
+          }
+          return encodeURIComponent(key) + '=' + encodeURIComponent(param);
         }
       })
       .filter(item => item.length !== 0)
@@ -112,7 +116,7 @@ export class RequestHelper {
   private static withQuery(url: string, params: any = {}) {
     const queryString = this.queryParams(params);
     return queryString
-      ? url + (url.indexOf("?") === -1 ? "?" : "&") + queryString
+      ? url + (url.indexOf('?') === -1 ? '?' : '&') + queryString
       : url;
   }
 
