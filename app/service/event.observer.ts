@@ -40,11 +40,16 @@ export class EventObserverService {
   /**
    * @description 移除主标识对应的所有回调
    * @param name 主标识
+   * @param key
    */
-  public unregister(name: string): boolean {
+  public unregister(name: string, key?: string): boolean {
     if (this.#events[name] && Object.keys(this.#events[name])?.length) {
-      this.#events[name] = {};
-      delete this.#events[name];
+      if (key) {
+        delete this.#events[name][key];
+      } else {
+        this.#events[name] = {};
+        delete this.#events[name];
+      }
       return true;
     }
     return false;
