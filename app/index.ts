@@ -18,3 +18,4 @@ export * from './util/md5';
 export * from './model/phone.model';
 export * from './util/nanoid.utils';
 export * from './util/file.util';
+export * from './util/number.utils';
