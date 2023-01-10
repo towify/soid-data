@@ -37,5 +37,5 @@ export const CommonUtil = {
     for (let index = 0; index < count; index += 1) {
       hold(index);
     }
-  },
+  }
 };
