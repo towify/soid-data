@@ -13,7 +13,7 @@ export class DateUtil {
     if (format === 'weekday') return DateUtil.formatWeekDay(date.getDay());
     const times: { [key: string]: number | string } = {
       'D+|d+': date.getDate(),
-      'hh': date.getUTCHours(),
+      'hh': date.getTime() < 86400000 ?  date.getUTCHours() : date.getHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
