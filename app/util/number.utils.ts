@@ -5,6 +5,10 @@
 
 
 export class NumberUtils {
+  static getRandomInRange(min: number, max: number) {
+    return this.toFixedNumber(Math.random() * (max - min + 1) + min, 2);
+  }
+
   static getRandomIntInRange(min: number, max: number) {
     return this.toFixedNumber(Math.random() * (max - min + 1) + min, 2);
   }
