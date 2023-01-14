@@ -6,8 +6,11 @@
 
 export class NumberUtils {
   static getRandomIntInRange(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
+    return this.toFixedNumber(Math.random() * (max - min + 1) + min, 2);
+  }
+
+  static toFixedNumber(value: number, digits: number, base = 10) {
+    const pow = Math.pow(base, digits);
+    return Math.round(value * pow) / pow;
   }
 }
