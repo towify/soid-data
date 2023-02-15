@@ -45,4 +45,8 @@ export const fileExtension: { [mimeType: string]: string } = {
   ['video/x-msvideo']: 'avi',
   ['video/x-m4v']: 'm4v',
   ['application/x-rar-compressed']: 'rar',
-}
+  ['font/otf']: 'otf',
+  ['font/ttf']: 'ttf',
+  ['font/woff']: 'woff',
+  ['font/woff2']: 'woff2'
+};
