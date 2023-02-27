@@ -91,4 +91,27 @@ export class ObjectUtils {
     };
     setDeepValue(params.path, params.source, params.value);
   }
+
+  static getKeysTwoObjects(obj: any, other: any): any {
+    return [...Object.keys(obj), ...Object.keys(other)].filter((key, index, array) => array.indexOf(key) === index);
+  }
+
+  static isDeepEqual(obj: any, other: any): any {
+    if (!this.isObject(obj) || !this.isObject(other)) {
+      return obj === other;
+    }
+
+    return this.getKeysTwoObjects(obj, other).every(
+      (key: any): boolean => {
+        if (!this.isObject(obj[key]) && !this.isObject(other[key])) {
+          return obj[key] === other[key];
+        }
+        if (!this.isObject(obj[key]) || !this.isObject(other[key])) {
+          return false;
+        }
+
+        return this.isDeepEqual(obj[key], other[key]);
+      }
+    );
+  }
 }
