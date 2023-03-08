@@ -16,7 +16,7 @@
   },
   "bundleDependencies": false,
   "peerDependencies": {
-    "nanoid": "4.0.1"
+    "nanoid": "3.3.4"
   },
   "peerDependenciesMeta": {
     "nanoid": {
@@ -24,7 +24,7 @@
     }
   },
   "optionalDependencies": {
-    "nanoid": "4.0.1"
+    "nanoid": "3.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
@@ -38,7 +38,7 @@
     "core-js": "^3.29.0",
     "jest": "^26.6.3",
     "latest-version": "^6.0.0",
-    "nanoid": "4.0.1",
+    "nanoid": "3.3.4",
     "ts-jest": "26.5.5",
     "ts-loader": "^9.4.2",
     "typescript": "~4.9.5"
