@@ -55,7 +55,7 @@ export class RequestHelper {
       xhr.open(method, this.withQuery(url, queryParams));
       if (headers) {
         Object.keys(headers).forEach((key) =>
-          xhr.setRequestHeader(key, headers[key]),
+          xhr.setRequestHeader(key, (<{ [key: string]: string }>headers)[key]),
         );
       }
 
