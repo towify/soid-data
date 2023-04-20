@@ -10,9 +10,10 @@ export class DateUtil {
   ) {
     const date = new Date(isoString);
     if (isNaN(date.getTime())) return `${ isoString }`;
+    if (format === 'weekday') return DateUtil.formatWeekDay(date.getDay());
     const times: { [key: string]: number | string } = {
       'D+|d+': date.getDate(),
-      'hh': date.getUTCHours(),
+      'hh': date.getTime() < 86400000 ?  date.getUTCHours() : date.getHours(),
       'mm': date.getMinutes(),
       'ss': date.getSeconds(),
       'q+': Math.floor((date.getMonth() + 3) / 3),
@@ -82,6 +83,28 @@ export class DateUtil {
         break;
     }
     return month;
+  }
+
+  static formatWeekDay(day: number): number | string {
+    switch (day) {
+      case 0:
+        return 'Sunday'
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      default:
+        break;
+    }
+    return day;
   }
 
   static yesterday(): Date {
