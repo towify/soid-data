@@ -6,6 +6,8 @@
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
  *  file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+import {parse} from '@babel/core';
+
 export type RequestOptions = {
   ignoreCache?: boolean;
   headers?: { [key: string]: string };
@@ -39,20 +41,23 @@ export class RequestHelper {
    * @param queryParams 请求参数
    * @param body 请求题
    * @param options 请求配置
+   * @param enableReadyStateChangeMode
+   * 开启这个 就会接受 服务端的 request on 的实施数据
    */
   public static request(
     method: 'get' | 'post' | 'put' | 'delete',
     url: string,
     queryParams: any = {},
     body: any = null,
-    options: RequestOptions = DefaultRequestOption
+    options: RequestOptions = DefaultRequestOption,
+    observeStateData?: (result: RequestResult) => void
   ): Promise<RequestResult> {
     const ignoreCache = options.ignoreCache || DefaultRequestOption.ignoreCache;
     const headers = options.headers || DefaultRequestOption.headers;
     const timeout = options.timeout || DefaultRequestOption.timeout;
     return new Promise<RequestResult>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(method, this.withQuery(url, queryParams));
+      xhr.open(method, this.withQuery(url, queryParams), true);
       if (headers) {
         Object.keys(headers).forEach((key) =>
           xhr.setRequestHeader(key, (<{ [key: string]: string }>headers)[key]),
@@ -66,9 +71,20 @@ export class RequestHelper {
       xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhr.withCredentials = false;
       xhr.timeout = timeout;
-      xhr.onload = (evt) => {
-        resolve(this.parseXHRResult(xhr));
-      };
+      if (observeStateData) {
+        xhr.onreadystatechange = () => {
+          observeStateData && observeStateData(this.parseXHRResult(xhr));
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.debug('收到服务器响应数据');
+          } else if (xhr.readyState === 4) {
+            resolve(this.errorResponse(xhr, 'Failed to make request on.', -1));
+          }
+        };
+      } else {
+        xhr.onload = (evt) => {
+          resolve(this.parseXHRResult(xhr));
+        };
+      }
 
       xhr.onerror = (evt) => {
         resolve(this.errorResponse(xhr, 'Failed to make request.', -1));
@@ -80,6 +96,7 @@ export class RequestHelper {
 
       if (body && (method === 'post' || method === 'put')) {
         xhr.setRequestHeader('Content-Type', 'application/json');
+        console.log(body, 'body');
         xhr.send(JSON.stringify(body));
       } else {
         xhr.send();
