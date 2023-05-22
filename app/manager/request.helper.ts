@@ -96,7 +96,6 @@ export class RequestHelper {
 
       if (body && (method === 'post' || method === 'put')) {
         xhr.setRequestHeader('Content-Type', 'application/json');
-        console.log(body, 'body');
         xhr.send(JSON.stringify(body));
       } else {
         xhr.send();
