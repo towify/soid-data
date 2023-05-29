@@ -79,7 +79,7 @@ export class RequestHelper {
           observeStateData && observeStateData(this.parseXHRResult(xhr));
           if (xhr.readyState === 4 && xhr.status === 200) {
             console.debug('SOID DATA: 收到服务器响应数据');
-            resolve({
+            observeStateData({
               ok: xhr.status >= 200 && xhr.status < 300,
               status: RequestCode.StreamDone,
               statusText: xhr.statusText,
