@@ -33,6 +33,10 @@ export type RequestResult = {
   headers: string;
 };
 
+export enum RequestCode {
+  StreamDone = -10000
+}
+
 export class RequestHelper {
   /**
    * @description 发起网络请求
@@ -41,7 +45,7 @@ export class RequestHelper {
    * @param queryParams 请求参数
    * @param body 请求题
    * @param options 请求配置
-   * @param enableReadyStateChangeMode
+   * @param observeStateData
    * 开启这个 就会接受 服务端的 request on 的实施数据
    */
   public static request(
@@ -80,11 +84,22 @@ export class RequestHelper {
             resolve(this.errorResponse(xhr, 'Failed to make request on.', -1));
           }
         };
-      } else {
-        xhr.onload = (evt) => {
-          resolve(this.parseXHRResult(xhr));
-        };
       }
+
+      xhr.onload = (evt) => {
+        if (observeStateData) {
+          resolve({
+            ok: xhr.status >= 200 && xhr.status < 300,
+            status: RequestCode.StreamDone,
+            statusText: xhr.statusText,
+            headers: xhr.getAllResponseHeaders(),
+            data: xhr.responseText,
+            json: <T>() => JSON.parse(xhr.responseText) as T
+          });
+        } else {
+          resolve(this.parseXHRResult(xhr));
+        }
+      };
 
       xhr.onerror = (evt) => {
         resolve(this.errorResponse(xhr, 'Failed to make request.', -1));
