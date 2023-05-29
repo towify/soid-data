@@ -39,11 +39,11 @@ describe('soid-data', () => {
       },
       {
         headers: {
-          'Authorization': 'Bearer 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'
+          'Authorization': 'Bearer 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'
         }
       },
       result => {
-        console.log(extractContent(result.data).join(''), 'data');
+        console.log(result, 'result')
       }
     );
   }, 40000);

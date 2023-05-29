@@ -6,7 +6,6 @@
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
  *  file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import {parse} from '@babel/core';
 
 export type RequestOptions = {
   ignoreCache?: boolean;
@@ -79,27 +78,24 @@ export class RequestHelper {
         xhr.onreadystatechange = () => {
           observeStateData && observeStateData(this.parseXHRResult(xhr));
           if (xhr.readyState === 4 && xhr.status === 200) {
-            console.debug('收到服务器响应数据');
+            console.debug('SOID DATA: 收到服务器响应数据');
+            resolve({
+              ok: xhr.status >= 200 && xhr.status < 300,
+              status: RequestCode.StreamDone,
+              statusText: xhr.statusText,
+              headers: xhr.getAllResponseHeaders(),
+              data: xhr.responseText,
+              json: <T>() => JSON.parse(xhr.responseText) as T
+            });
           } else if (xhr.readyState === 4) {
             resolve(this.errorResponse(xhr, 'Failed to make request on.', -1));
           }
         };
-      }
-
-      xhr.onload = (evt) => {
-        if (observeStateData) {
-          resolve({
-            ok: xhr.status >= 200 && xhr.status < 300,
-            status: RequestCode.StreamDone,
-            statusText: xhr.statusText,
-            headers: xhr.getAllResponseHeaders(),
-            data: xhr.responseText,
-            json: <T>() => JSON.parse(xhr.responseText) as T
-          });
-        } else {
+      } else {
+        xhr.onload = () => {
           resolve(this.parseXHRResult(xhr));
-        }
-      };
+        };
+      }
 
       xhr.onerror = (evt) => {
         resolve(this.errorResponse(xhr, 'Failed to make request.', -1));
