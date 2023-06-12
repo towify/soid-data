@@ -66,7 +66,6 @@ export class RequestHelper {
           xhr.setRequestHeader(key, (<{ [key: string]: string }>headers)[key]),
         );
       }
-
       if (ignoreCache) {
         xhr.setRequestHeader('Cache-Control', 'no-cache');
       }
@@ -98,10 +97,12 @@ export class RequestHelper {
       }
 
       xhr.onerror = (evt) => {
+        observeStateData && observeStateData(this.errorResponse(xhr, 'Failed to make request.', -1));
         resolve(this.errorResponse(xhr, 'Failed to make request.', -1));
       };
 
       xhr.ontimeout = (evt) => {
+        observeStateData && observeStateData(this.errorResponse(xhr, 'Request took longer than expected.', -2));
         resolve(this.errorResponse(xhr, 'Request took longer than expected.', -2));
       };
 
@@ -166,6 +167,7 @@ export class RequestHelper {
    * @description 拼接错误
    * @param xhr
    * @param message
+   * @param status
    */
   private static errorResponse(
     xhr: XMLHttpRequest,
