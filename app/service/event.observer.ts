@@ -66,4 +66,20 @@ export class EventObserverService {
       event(message);
     });
   }
+
+  public async notifyAsQueue(name: string, message?: any) {
+    if (!this.#events[name]) return;
+    const tasks: ((message: any) => void)[] = Object.values(this.#events[name]);
+    return new Promise(resolve => {
+      let interval = setInterval(() => {
+        console.debug('SOID DATA: task left count', tasks.length);
+        let queue = tasks.splice(0, 20);
+        queue.forEach(task => task(message));
+        if (tasks.length <= 0) {
+          clearInterval(interval);
+          resolve(undefined);
+        }
+      }, 300);
+    });
+  }
 }

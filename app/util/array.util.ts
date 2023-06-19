@@ -31,4 +31,12 @@ export class ArrayUtils {
     })
     return Object.values(object);
   }
+
+  static chunk<T extends any>(array: T[], count: number){
+    const chunks = [];
+    while(array.length){
+      chunks.push(array.splice(0, count))
+    }
+    return chunks;
+  }
 }
