@@ -67,19 +67,24 @@ export class EventObserverService {
     });
   }
 
-  public async notifyAsQueue(name: string, message?: any) {
-    if (!this.#events[name]) return;
-    const tasks: ((message: any) => void)[] = Object.values(this.#events[name]);
+  public async notifyAsQueue(params: {
+    name: string,
+    message?: any,
+    count?: number,
+    duration?: number
+  }) {
+    if (!this.#events[params.name]) return;
+    const tasks: ((message: any) => void)[] = Object.values(this.#events[params.name]);
     return new Promise(resolve => {
       let interval = setInterval(() => {
         console.debug('SOID DATA: task left count', tasks.length);
-        let queue = tasks.splice(0, 20);
-        queue.forEach(task => task(message));
+        let queue = tasks.splice(0, params.count ?? 10);
+        queue.forEach(task => task(params.message));
         if (tasks.length <= 0) {
           clearInterval(interval);
           resolve(undefined);
         }
-      }, 300);
+      }, params.duration ?? 300);
     });
   }
 }
